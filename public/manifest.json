@@ -1,0 +1,18 @@
+{
+  "name": "Mosu | personal terminal",
+  "short_name": "Mosu",
+  "description": "Mosu 的个人 IP 视觉网站",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#050708",
+  "theme_color": "#050708",
+  "lang": "zh-CN",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23050708'/><text x='50' y='68' font-family='monospace' font-size='52' font-weight='bold' fill='%236cffbd' text-anchor='middle'>{/}</text></svg>",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

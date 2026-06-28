@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Mosu 的个人 IP 视觉网站，集合博客、收藏、音乐、天气、热搜和联系方式。" />
+    <meta name="keywords" content="Mosu, 个人网站, 程序员, 极客, 博客, 收藏, 音乐, 天气, 热搜" />
+    <meta name="author" content="Mosu" />
+    <meta name="theme-color" content="#050708" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Mosu | personal terminal" />
+    <meta property="og:description" content="Mosu 的个人 IP 视觉网站，集合博客、收藏、音乐、天气、热搜和联系方式。" />
+    <meta property="og:locale" content="zh_CN" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Mosu | personal terminal" />
+    <meta name="twitter:description" content="Mosu 的个人 IP 视觉网站，集合博客、收藏、音乐、天气、热搜和联系方式。" />
+
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23050708'/><text x='50' y='68' font-family='monospace' font-size='52' font-weight='bold' fill='%236cffbd' text-anchor='middle'>{/}</text></svg>" />
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23050708'/><text x='50' y='68' font-family='monospace' font-size='52' font-weight='bold' fill='%236cffbd' text-anchor='middle'>{/}</text></svg>" />
+
+    <link rel="manifest" href="/manifest.json" />
+
+    <style>
+      #boot-skeleton {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 24px;
+        background: #050708;
+        color: #6cffbd;
+        font-family: "SFMono-Regular", "Cascadia Code", "JetBrains Mono", monospace;
+        transition: opacity 400ms ease;
+      }
+      #boot-skeleton.hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
+      .boot-brand {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        font-size: 28px;
+        font-weight: 800;
+      }
+      .boot-brand .bracket { color: rgba(242,247,245,0.68); }
+      .boot-brand .slash { color: #6cffbd; text-shadow: 0 0 24px rgba(108,255,189,0.78); }
+      .boot-text {
+        font-size: 14px;
+        color: rgba(242,247,245,0.68);
+        letter-spacing: 0.08em;
+      }
+      .boot-bar {
+        width: 180px;
+        height: 3px;
+        background: rgba(242,247,245,0.08);
+        border-radius: 999px;
+        overflow: hidden;
+      }
+      .boot-bar::after {
+        content: "";
+        display: block;
+        width: 40%;
+        height: 100%;
+        background: linear-gradient(90deg, #6cffbd, #72c9ff);
+        border-radius: inherit;
+        animation: bootShimmer 1.4s ease-in-out infinite;
+      }
+      @keyframes bootShimmer {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(350%); }
+      }
+      .boot-dots::after {
+        content: "";
+        animation: bootDots 1.2s steps(4, end) infinite;
+      }
+      @keyframes bootDots {
+        0% { content: ""; }
+        25% { content: "."; }
+        50% { content: ".."; }
+        75% { content: "..."; }
+      }
+    </style>
+
+    <title>Mosu | personal terminal</title>
+  </head>
+  <body>
+    <div id="boot-skeleton">
+      <div class="boot-brand">
+        <span class="bracket">{</span><span class="slash">/</span><span class="bracket">}</span>
+        <span style="margin-left:4px;color:#f2f7f5;">Mosu</span>
+      </div>
+      <div class="boot-bar"></div>
+      <div class="boot-text">initializing personal terminal<span class="boot-dots"></span></div>
+    </div>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
