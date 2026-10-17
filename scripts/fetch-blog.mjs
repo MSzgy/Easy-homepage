@@ -1,7 +1,7 @@
 // Fetch public posts and categories from the Halo blog into src/data/blog.json.
 // Runs before every build. The Halo API sends no CORS headers, so the browser
 // cannot read it directly. On failure the previous blog.json is kept.
-import { writeFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 
 const BASE = "https://halo.mosuyang.org";
 const API = `${BASE}/apis/api.content.halo.run/v1alpha1`;
@@ -46,9 +46,15 @@ try {
     .filter((category) => category.count > 0 && !HIDDEN_CATEGORIES.has(category.name))
     .sort((a, b) => b.count - a.count);
 
-  const blog = { url: BASE, fetchedAt: new Date().toISOString(), posts, categories };
-  await writeFile(OUT, `${JSON.stringify(blog, null, 2)}\n`);
-  console.log(`blog.json: ${posts.length} posts, ${categories.length} categories`);
+  // Rewrite only when the content changed, so builds don't dirty the tree with a new timestamp.
+  const previous = await readFile(OUT, "utf8").then(JSON.parse).catch(() => null);
+  if (previous && JSON.stringify([previous.posts, previous.categories]) === JSON.stringify([posts, categories])) {
+    console.log(`blog.json: unchanged (${posts.length} posts)`);
+  } else {
+    const blog = { url: BASE, fetchedAt: new Date().toISOString(), posts, categories };
+    await writeFile(OUT, `${JSON.stringify(blog, null, 2)}\n`);
+    console.log(`blog.json: ${posts.length} posts, ${categories.length} categories`);
+  }
 } catch (error) {
   console.warn(`fetch-blog: ${error.message}; keeping the existing blog.json`);
 }
