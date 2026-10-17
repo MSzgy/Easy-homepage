@@ -4,3 +4,4 @@ dist/
 .npm-cache/
 .npmrc
 .DS_Store
+deploy/.env

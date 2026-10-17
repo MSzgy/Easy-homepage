@@ -1,0 +1,13 @@
+services:
+  easy-homepage:
+    image: nginx:1.27.1
+    container_name: easy-homepage
+    restart: unless-stopped
+    # Default bridge: no extra Docker network on the shared server.
+    network_mode: bridge
+    # Localhost only; the host's reverse proxy forwards the domain here.
+    ports:
+      - "127.0.0.1:8799:80"
+    volumes:
+      - ./dist:/usr/share/nginx/html:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
