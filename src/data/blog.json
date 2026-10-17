@@ -1,0 +1,731 @@
+{
+  "url": "https://halo.mosuyang.org",
+  "fetchedAt": "2026-10-17T07:32:34.038Z",
+  "posts": [
+    {
+      "title": "Voice for AI Agents and Applications",
+      "url": "https://halo.mosuyang.org/archives/voice-for-ai-agents-and-applications",
+      "date": "2026-08-28",
+      "categories": [
+        "Agent",
+        "MultiModal"
+      ],
+      "excerpt": "课程链接 可免费领取额度 Overview of Voice UI"
+    },
+    {
+      "title": "Efficiently Serving LLMs",
+      "url": "https://halo.mosuyang.org/archives/efficiently-serving-llms",
+      "date": "2026-08-16",
+      "categories": [
+        "Model原理",
+        "LLM"
+      ],
+      "excerpt": "课程链接 Text Generation Batching"
+    },
+    {
+      "title": "AI Agents for Image and Video Generation",
+      "url": "https://halo.mosuyang.org/archives/ai-agents-for-image-and-video-generation",
+      "date": "2026-07-31",
+      "categories": [
+        "Agent"
+      ],
+      "excerpt": "课程链接 Introduction Overview of Generative Media"
+    },
+    {
+      "title": "Fast & Efficient LLM Inference with vLLM",
+      "url": "https://halo.mosuyang.org/archives/fast-efficient-llm-inference-with-vllm",
+      "date": "2026-06-25",
+      "categories": [
+        "LLM部署",
+        "LLM",
+        "Model原理",
+        "Evaluate"
+      ],
+      "excerpt": "课程链接 Introdcution"
+    },
+    {
+      "title": "Fine-tuning & RL For LLMs: Intro to Post training Module 3: Evaluation as the North Star",
+      "url": "https://halo.mosuyang.org/archives/fine-tuning-rl-for-llms-intro-to-post-training-module-3-evaluation-as-the-north-star",
+      "date": "2026-06-05",
+      "categories": [
+        "Evaluate",
+        "Model原理"
+      ],
+      "excerpt": "课程链 M3_G1_evaluation_and_debugging.ipynb"
+    },
+    {
+      "title": "从 Hugging Face 基础代码理解文本大模型推理：以 Qwen2-0.5B 为例",
+      "url": "https://halo.mosuyang.org/archives/cong-hugging-face-ji-chu-dai-ma-li-jie-wen-ben-da-mo-xing-tui-li-yi-qwen2-0.5b-wei-li",
+      "date": "2026-05-22",
+      "categories": [
+        "Model原理"
+      ],
+      "excerpt": "这篇文章整理自一个文本大模型部署学习项目的基础部分。目标是先把 Hugging Face 文本生成链路讲清楚：一段用户输入如何变成 token，token 如何进入模型，模型如何输出 logits，最后又如何通过解码变成自然语言。 项目中的基础内容按下面这条线展开： 00_pip"
+    },
+    {
+      "title": "Fine-tuning  & RL For LLMs: Intro to Post training Module 2: Core techniques in Fine-Tuning and RL",
+      "url": "https://halo.mosuyang.org/archives/fine-tuning-rl-for-llms-intro-to-post-training-module-2-core-techniques-in-fine-tuning-and-rl",
+      "date": "2026-05-07",
+      "categories": [
+        "Model原理",
+        "RL",
+        "finetuning"
+      ],
+      "excerpt": "课程链接 github"
+    },
+    {
+      "title": "A2A: The Agent2Agent Protocol",
+      "url": "https://halo.mosuyang.org/archives/a2a-the-agent2agent-protocol",
+      "date": "2026-04-14",
+      "categories": [
+        "Agent"
+      ],
+      "excerpt": "课程链接 Introduction 本课程利用多个agent框架搭建各种功能的agent, 之后采取A2A框架进行封装变为整体，结合了BeeAI框架做组合，搭建一个Multi-Agent系统。 Course Repos Course notebooks and scripts: "
+    },
+    {
+      "title": "Agent Skills with Anthropic",
+      "url": "https://halo.mosuyang.org/archives/agent-skills-with-anthropic",
+      "date": "2026-02-11",
+      "categories": [
+        "Agent",
+        "AI"
+      ],
+      "excerpt": "课程链接 Introduction 本课程是由Anthropic带来的agent skills 课程, skills是指一系列的instructions, agents可以根据这些指令进行更有效率的任务处理,可以加快速度,减少token的使用. Why Use Skills - "
+    },
+    {
+      "title": "solana-voting-system",
+      "url": "https://halo.mosuyang.org/archives/solana-voting-system",
+      "date": "2026-01-23",
+      "categories": [
+        "solana",
+        "BlockChain"
+      ],
+      "excerpt": "github 链接 合约部署信息 - 程序 ID: 3hHpqxvKpp3yWSk3a73mMc9DDd4gj9JH3RpVRYKMZowf &"
+    },
+    {
+      "title": "Fine-tuning  & RL For LLMs: Intro to Post training Module 1: Post-Training Overview",
+      "url": "https://halo.mosuyang.org/archives/fine-tuning-and-reinforcement-learning-for-llms-intro-to-post-training",
+      "date": "2026-01-11",
+      "categories": [
+        "finetuning",
+        "RL",
+        "Model原理"
+      ],
+      "excerpt": "课程链接 github Module 1: Post-Training Overview Background"
+    },
+    {
+      "title": "Agentic AI",
+      "url": "https://halo.mosuyang.org/archives/agentic-ai",
+      "date": "2025-12-28",
+      "categories": [
+        "Agent"
+      ],
+      "excerpt": "课程链接 agentic-ai-public my own github"
+    },
+    {
+      "title": "币圈交易指南",
+      "url": "https://halo.mosuyang.org/archives/bi-quan-jiao-yi-zhi-nan",
+      "date": "2025-11-06",
+      "categories": [],
+      "excerpt": "从赚点钱到赚大钱：加密交易者系统成长指南"
+    },
+    {
+      "title": "Post-training of LLMs",
+      "url": "https://halo.mosuyang.org/archives/https-learn.deeplearning.ai-courses-post-training-of-llms-lesson-n25bz-introduction",
+      "date": "2025-11-02",
+      "categories": [
+        "Model原理",
+        "LLM"
+      ],
+      "excerpt": "课程链接 github Introduction 本课程介绍了微调训练LLM的各种技术。包括DPO，Online Reinforcement learning，PPO，GRPO(Group Relative Policy Optimization)。 “一个大语言模型（LLM）在"
+    },
+    {
+      "title": "Building Code Agents with Hugging Face smolagents",
+      "url": "https://halo.mosuyang.org/archives/building-code-agents-with-hugging-face-smolagents",
+      "date": "2025-09-23",
+      "categories": [
+        "Agent"
+      ],
+      "excerpt": "课程链接 github Introduction 本课程是由Huggingface 带来的code agent课程，smolagents是huggingface的框架。本课程讲解了如何安全执行code以及按照ReAct （Thought-Action behavior）的方法搭建"
+    },
+    {
+      "title": "Getting Structured LLM Output",
+      "url": "https://halo.mosuyang.org/archives/getting-structured-llm-output",
+      "date": "2025-09-07",
+      "categories": [
+        "LLM"
+      ],
+      "excerpt": "课程链接 github Introduction 本节课是由"
+    },
+    {
+      "title": "ACP: Agent Communication Protocol",
+      "url": "https://halo.mosuyang.org/archives/acp-agent-communication-protocol",
+      "date": "2025-08-20",
+      "categories": [
+        "Agent"
+      ],
+      "excerpt": "课程链接 github Introduction 本课程介绍了Agent的一个通信协议：ACP，通过这些协议可以联系多个Agent以组成workflow。本课程介绍的Multi-agnet的例子还采用了CrewAI agen"
+    },
+    {
+      "title": "Orchestrating Workflows for GenAI Applications",
+      "url": "https://halo.mosuyang.org/archives/orchestrating-workflows-for-genai-applications",
+      "date": "2025-07-05",
+      "categories": [
+        "workflow"
+      ],
+      "excerpt": "课程链接 github Introduction 本课程讲解了Airflow这个orchestrator框架。 From Notebook to Pipeline"
+    },
+    {
+      "title": "solana",
+      "url": "https://halo.mosuyang.org/archives/solana",
+      "date": "2025-06-26",
+      "categories": [
+        "BlockChain",
+        "solana"
+      ],
+      "excerpt": "playground doc 合约编写 当然可以！Solana 是当前流行的高性能公链之一，主要支持 Rust 和 Anchor Framework 编写智能合约（Solana 也叫“Program”）。下面以最简单的合约为例，手把手说明编写、部署到本地，并通过 JavaScri"
+    },
+    {
+      "title": "BlockChain",
+      "url": "https://halo.mosuyang.org/archives/defi",
+      "date": "2025-06-17",
+      "categories": [
+        "BlockChain"
+      ],
+      "excerpt": "Defi https://defi-learning.org/f22"
+    },
+    {
+      "title": "Safe and reliable AI via guardrails",
+      "url": "https://halo.mosuyang.org/archives/safe-and-reliable-ai-via-guardrails",
+      "date": "2025-06-12",
+      "categories": [
+        "LMM安全"
+      ],
+      "excerpt": "课程 github Introduction 本课程是关于保证基于LLM的系统安全的，讲解了如何利用guardrails消除LLM的缺点。 Failure Modes in RAG applications 本节课程先搭建了一个简单的RAG applicatio"
+    },
+    {
+      "title": "MCP: Build Rich-Context AI Apps with Anthropic",
+      "url": "https://halo.mosuyang.org/archives/untitled-post",
+      "date": "2025-05-31",
+      "categories": [
+        "Agent"
+      ],
+      "excerpt": "课程链接 github链接 Introduction 本课程介绍了MCP (Model Context Protocol)，可以使得搭建LLM application变得简单，其中MCP分为MCP Server以及"
+    },
+    {
+      "title": "Event-Driven Agentic Document Workflows",
+      "url": "https://halo.mosuyang.org/archives/event-driven-agentic-document-workflows",
+      "date": "2025-05-17",
+      "categories": [
+        "RAG",
+        "Agent"
+      ],
+      "excerpt": "课程链接 github Introduction 下面是利用Agent做RAG的流程图，在本课程中举了个简历分析的例子，根据简历提出了一些问题，然后LLM会自动回答这些问题来模拟面试。"
+    },
+    {
+      "title": "Building AI Browser Agents",
+      "url": "https://halo.mosuyang.org/archives/building-ai-browser-agents",
+      "date": "2025-04-26",
+      "categories": [
+        "Agent"
+      ],
+      "excerpt": "课程链接 github链接"
+    },
+    {
+      "title": "LLMs as Operating Systems: Agent Memory",
+      "url": "https://halo.mosuyang.org/archives/llms-as-operating-systems-agent-memory",
+      "date": "2025-04-20",
+      "categories": [
+        "LLM",
+        "Agent"
+      ],
+      "excerpt": "课程链接：https://learn.deeplearning.ai/courses/llms-as-operating-systems-agent-memory/lesson/nfkqk/introduction?courseName=llms-as-operating-sys"
+    },
+    {
+      "title": "Building toward Computer Use with Anthropic",
+      "url": "https://halo.mosuyang.org/archives/building-toward-computer-use-with-antropic",
+      "date": "2025-04-05",
+      "categories": [
+        "Agent"
+      ],
+      "excerpt": "课程链接：https://learn.deeplearning.ai/courses/building-toward-computer-use-with-anthropic/lesson/a6k0z/introduction?courseName=building-toward-"
+    },
+    {
+      "title": "Multi AI Agent Systems with crewAI",
+      "url": "https://halo.mosuyang.org/archives/multi-ai-agent-systems-with-crewai",
+      "date": "2025-04-01",
+      "categories": [
+        "Agent"
+      ],
+      "excerpt": "课程链接：https://learn.deeplearning.ai/courses/multi-ai-agent-systems-with-crewai/lesson/wwou5/introduction?courseName=multi-ai-agent-systems-wi"
+    },
+    {
+      "title": "Reinforcement Learning From Human Feedback",
+      "url": "https://halo.mosuyang.org/archives/reinforcement-learning-from-human-feedback",
+      "date": "2025-03-17",
+      "categories": [
+        "LLM",
+        "RL"
+      ],
+      "excerpt": "课程链接：https://learn.deeplearning.ai/courses/reinforcement-learning-from-human-feedback/lesson/k1m9r/introduction?courseName=reinforcement-lea"
+    },
+    {
+      "title": "How Transformer LLMs Work",
+      "url": "https://halo.mosuyang.org/archives/how-transformer-llms-work",
+      "date": "2025-03-09",
+      "categories": [
+        "LLM",
+        "Model原理"
+      ],
+      "excerpt": "课程链接：https://learn.deeplearning.ai/courses/how-transformer-llms-work/lesson/nfshb/introduction?courseName=how-transformer-llms-work github链接"
+    },
+    {
+      "title": "常见LLM学习资料（持续更新）",
+      "url": "https://halo.mosuyang.org/archives/chang-jian-llmxue-xi-zi-liao-chi-xu-geng-xin",
+      "date": "2025-03-09",
+      "categories": [
+        "其他学习资料链接"
+      ],
+      "excerpt": "Prompt Engineering blog https://lilianweng.github.io/posts/2023-03-15-prompt-engineering/#chain-of-thought-cot Agent https://lilianweng.gith"
+    },
+    {
+      "title": "Evaluating AI Agents",
+      "url": "https://halo.mosuyang.org/archives/evaluating-ai-agents",
+      "date": "2025-02-27",
+      "categories": [
+        "Agent",
+        "Evaluate"
+      ],
+      "excerpt": "课程链接：https://learn.deeplearning.ai/courses/evaluating-ai-agents/lesson/sqkza/introduction?courseName=evaluating-ai-agents github链接：https://g"
+    },
+    {
+      "title": "Functions, Tools and Agents with LangChain",
+      "url": "https://halo.mosuyang.org/archives/functions-tools-and-agents-with-langchain",
+      "date": "2025-02-20",
+      "categories": [
+        "RAG",
+        "Agent",
+        "LangChain"
+      ],
+      "excerpt": "课程链接：https://learn.deeplearning.ai/courses/functions-tools-agents-langchain/lesson/rtwb1/introduction github链接：https://github.com/MSzgy/Func"
+    },
+    {
+      "title": "Evaluating and Debugging Generative AI",
+      "url": "https://halo.mosuyang.org/archives/evaluating-and-debugging-generative-ai",
+      "date": "2025-02-16",
+      "categories": [
+        "LLM",
+        "Evaluate"
+      ],
+      "excerpt": "课程链接：https://learn.deeplearning.ai/courses/evaluating-debugging-generative-ai/lesson/t7eoa/introduction github链接：https://github.com/MSzgy/Ev"
+    },
+    {
+      "title": "Intro to Federated Learning",
+      "url": "https://halo.mosuyang.org/archives/intro-to-federated-learning",
+      "date": "2025-02-15",
+      "categories": [
+        "LLM"
+      ],
+      "excerpt": "课程链接：https://learn.deeplearning.ai/courses/intro-to-federated-learning/lesson/uhuz2/introduction github链接：https://github.com/MSzgy/Intro-to-"
+    },
+    {
+      "title": "Federated Fine-tuning of LLMs with Private Data",
+      "url": "https://halo.mosuyang.org/archives/federated-fine-tuning-of-llms-with-private-data",
+      "date": "2025-02-13",
+      "categories": [
+        "LLM",
+        "finetuning",
+        "LMM安全"
+      ],
+      "excerpt": "课程链接：https://learn.deeplearning.ai/courses/intro-to-federated-learning-c2/ github链接：https://github.com/MSzgy/Federated-Fine-tuning-of-LLMs-w"
+    },
+    {
+      "title": "Building Generative AI Applications with Gradio",
+      "url": "https://halo.mosuyang.org/archives/building-generative-ai-applications-with-gradio",
+      "date": "2025-02-09",
+      "categories": [
+        "AI",
+        "LLM"
+      ],
+      "excerpt": "课程链接：https://learn.deeplearning.ai/courses/huggingface-gradio/lesson/1/introduction github链接：https://github.com/MSzgy/Building-Generative-AI"
+    },
+    {
+      "title": "Knowledge Graphs for RAG",
+      "url": "https://halo.mosuyang.org/archives/knowledge-graphs-for-rag",
+      "date": "2025-02-06",
+      "categories": [
+        "LLM",
+        "RAG",
+        "KG"
+      ],
+      "excerpt": "课程连接：https://learn.deeplearning.ai/courses/knowledge-graphs-rag github连接：https://github.com/MSzgy/Knowledge-Graphs-for-RAG Introduction 在本章课"
+    },
+    {
+      "title": "Building Systems with the ChatGPT API",
+      "url": "https://halo.mosuyang.org/archives/building-systems-with-the-chatgpt-api",
+      "date": "2025-01-20",
+      "categories": [
+        "LLM",
+        "OpenAI"
+      ],
+      "excerpt": "课程链接：https://learn.deeplearning.ai/courses/chatgpt-building-system/lesson/1/introduction github: https://github.com/MSzgy/Building-Systems-w"
+    },
+    {
+      "title": "Collaborative Writing and Coding with OpenAI Canvas",
+      "url": "https://halo.mosuyang.org/archives/collaborative-writing-and-coding-with-openai-c",
+      "date": "2024-12-21",
+      "categories": [
+        "LLM",
+        "OpenAI"
+      ],
+      "excerpt": "课程链接：https://learn.deeplearning.ai/courses/collaborative-writing-and-coding-with-openai-canvas/lesson/1/introduction Introduction OpenAI Can"
+    },
+    {
+      "title": "AI大模型系统实战",
+      "url": "https://halo.mosuyang.org/archives/aida-mo-xing-xi-tong-shi-zhan",
+      "date": "2024-12-12",
+      "categories": [
+        "AI",
+        "LLM"
+      ],
+      "excerpt": "课程链接：https://b.geekbang.org/member/course/intro/100613101 学习使用的免费链接：https://freegeektime.com/ 介绍 本课程分为下面几个章节 （以下摘录于课程原文） 热身篇和架构基础篇。带你搭建知识体系，"
+    },
+    {
+      "title": "AI Agents in LangGraph",
+      "url": "https://halo.mosuyang.org/archives/ai-agents-in-langgraph",
+      "date": "2024-12-07",
+      "categories": [
+        "AI",
+        "LLM",
+        "LangChain",
+        "Agent"
+      ],
+      "excerpt": "课程链接：https://learn.deeplearning.ai/courses/ai-agents-in-langgraph/lesson/1/introduction github：https://github.com/MSzgy/AI-Agents-in-LangGra"
+    },
+    {
+      "title": "LangChain Chat with Your Data",
+      "url": "https://halo.mosuyang.org/archives/langchain-chat-with-your-data",
+      "date": "2024-11-12",
+      "categories": [
+        "AI",
+        "LLM",
+        "LangChain"
+      ],
+      "excerpt": "课程链接：https://learn.deeplearning.ai/courses/langchain-chat-with-your-data/lesson/1/introduction 代码：https://github.com/MSzgy/LangChain-Chat-wi"
+    },
+    {
+      "title": "Open Source Models with Hugging Face",
+      "url": "https://halo.mosuyang.org/archives/untitled-post",
+      "date": "2024-11-07",
+      "categories": [
+        "AI",
+        "LLM"
+      ],
+      "excerpt": "课程链接：https://learn.deeplearning.ai/courses/open-source-models-hugging-face/lesson/1/introduction 代码：https://github.com/MSzgy/Open-Source-Mod"
+    },
+    {
+      "title": "Practical Multi AI Agents and Advanced Use Cases with crewAI",
+      "url": "https://halo.mosuyang.org/archives/practical-multi-ai-agents-and-advanced-use-cases-with-crewai",
+      "date": "2024-11-03",
+      "categories": [
+        "AI",
+        "LLM",
+        "Agent"
+      ],
+      "excerpt": "课程链接：https://learn.deeplearning.ai/courses/practical-multi-ai-agents-and-advanced-use-cases-with-crewai/lesson/1/introduction github：https:/"
+    },
+    {
+      "title": "Retrieval Optimization: Tokenization to Vector Quantization",
+      "url": "https://halo.mosuyang.org/archives/retrieval-optimization-tokenization-to-vector-quantization",
+      "date": "2024-10-26",
+      "categories": [
+        "AI",
+        "LLM",
+        "RAG"
+      ],
+      "excerpt": "课程链接：https://learn.deeplearning.ai/courses/retrieval-optimization-from-tokenization-to-vector-quantization/lesson/1/introduction github: htt"
+    },
+    {
+      "title": "AI大模型之美",
+      "url": "https://halo.mosuyang.org/archives/aida-mo-xing-zhi-mei",
+      "date": "2024-10-18",
+      "categories": [
+        "AI",
+        "LLM"
+      ],
+      "excerpt": "课程链接：https://b.geekbang.org/member/course/intro/100541001 github: https://github.com/MSzgy/AI-model-Beauty (只有部分章节代码) 介绍 课程共分为 3 个模块（下面内容来自于"
+    },
+    {
+      "title": "利用Embedding model 做文本分类",
+      "url": "https://halo.mosuyang.org/archives/li-yong-embedding-model-zuo-wen-ben-fen-lei",
+      "date": "2024-10-06",
+      "categories": [
+        "AI",
+        "AI大模型之美"
+      ],
+      "excerpt": "Introduction 本学习笔记是基于极客时间《AI大模型之美》第5节课程。 https://b.geekbang.org/member/course/detail/643889 数据处理 import pandas as pd import tiktoken import "
+    },
+    {
+      "title": "web 安全(updating)",
+      "url": "https://halo.mosuyang.org/archives/web-an-quan-updating",
+      "date": "2024-10-04",
+      "categories": [
+        "安全",
+        "web安全"
+      ],
+      "excerpt": "本篇课程讲记录一些常见的web安全学习过程，持续更新。 实践网址: https://google-gruyere.appspot.com/"
+    },
+    {
+      "title": "LangChain for LLM Application Development",
+      "url": "https://halo.mosuyang.org/archives/langchain-for-llm-application-development",
+      "date": "2024-10-03",
+      "categories": [
+        "AI",
+        "LLM",
+        "LangChain",
+        "RAG"
+      ],
+      "excerpt": "课程链接：https://learn.deeplearning.ai/courses/langchain/lesson/1/introduction 代码： https://github.com/MSzgy/LangChain-for-LLM-Application-Develo"
+    },
+    {
+      "title": "Building Agentic RAG with Llamaindex",
+      "url": "https://halo.mosuyang.org/archives/building-agentic-rag-with-llamaindex",
+      "date": "2024-09-29",
+      "categories": [
+        "AI",
+        "LLM",
+        "RAG",
+        "Agent"
+      ],
+      "excerpt": "课程链接：https://learn.deeplearning.ai/courses/building-agentic-rag-with-llamaindex/lesson/1/introduction 整理的代码： https://github.com/MSzgy/Buildi"
+    },
+    {
+      "title": "ChatGPT Prompt Engineering for Developers",
+      "url": "https://halo.mosuyang.org/archives/chatgpt-prompt-engineering-for-developers",
+      "date": "2024-09-28",
+      "categories": [
+        "AI",
+        "LLM",
+        "OpenAI"
+      ],
+      "excerpt": "https://learn.deeplearning.ai/courses/chatgpt-prompt-eng/lesson/1/introduction git https://github.com/MSzgy/ChatGPT-Prompt-Engineering-for-D"
+    },
+    {
+      "title": "Prompt Compression and Query Optimization",
+      "url": "https://halo.mosuyang.org/archives/prompt-compression-and-query-optimization",
+      "date": "2024-09-26",
+      "categories": [
+        "AI",
+        "LLM"
+      ],
+      "excerpt": "https://learn.deeplearning.ai/courses/prompt-compression-and-query-optimization/lesson/1/introduction Introduction 代码见 https://github.com/MS"
+    },
+    {
+      "title": "Function-calling and data extraction with LLMs",
+      "url": "https://halo.mosuyang.org/archives/function-calling-and-data-extraction-with-llms",
+      "date": "2024-09-19",
+      "categories": [
+        "AI",
+        "LLM"
+      ],
+      "excerpt": "Introduction https://learn.deeplearning.ai/courses/function-calling-and-data-extraction-with-llms/lesson/1/introduction 使用了NexusRavenV2-13B "
+    },
+    {
+      "title": "Large Multimodal Model Prompting with Gemini",
+      "url": "https://halo.mosuyang.org/archives/large-multimodal-model-prompting-with-gemini",
+      "date": "2024-09-16",
+      "categories": [
+        "AI",
+        "LLM",
+        "MultiModal"
+      ],
+      "excerpt": "Introduction https://learn.deeplearning.ai/courses/large-multimodal-model-prompting-with-gemini/lesson/1/introduction Gemini 是谷歌推出的LLM model"
+    },
+    {
+      "title": "BTC price",
+      "url": "https://halo.mosuyang.org/archives/btc-price",
+      "date": "2024-09-14",
+      "categories": [],
+      "excerpt": ""
+    },
+    {
+      "title": "Building AI Applications With Haystack",
+      "url": "https://halo.mosuyang.org/archives/building-ai-applications-with-haystack",
+      "date": "2024-09-13",
+      "categories": [
+        "AI",
+        "LLM"
+      ],
+      "excerpt": "https://learn.deeplearning.ai/courses/building-ai-applications-with-haystack git https://github.com/MSzgy/Building-AI-Applications-With-Hays"
+    },
+    {
+      "title": "Improving Accuracy of LLM Applications",
+      "url": "https://halo.mosuyang.org/archives/improving-accuracy-of-llm-applications",
+      "date": "2024-09-07",
+      "categories": [
+        "LLM",
+        "finetuning"
+      ],
+      "excerpt": "https://learn.deeplearning.ai/courses/improving-accuracy-of-llm-applications Introduction and Overview 1 介绍了这篇课程，主要使用的llama3 8b的模型然后做了简单的pro"
+    },
+    {
+      "title": "Dify",
+      "url": "https://halo.mosuyang.org/archives/dify",
+      "date": "2024-08-26",
+      "categories": [
+        "AI",
+        "LLM"
+      ],
+      "excerpt": "今天（2024.08.24）去参加亚马逊云线下的关于GenAI的会议，在会上，有个称为Dify的项目方对他们项目做了介绍https://github.com/langgenius/dify， 我也在服务器上部署下。"
+    },
+    {
+      "title": "RAG 向量数据库介绍",
+      "url": "https://halo.mosuyang.org/archives/rag-xiang-liang-shu-ju-ku-jie-shao",
+      "date": "2024-08-26",
+      "categories": [
+        "AI",
+        "LLM",
+        "RAG"
+      ],
+      "excerpt": "可以白嫖的云数据库： zilliz LanceDB https://lancedb.com/ LanceDB 是一个专门用于管理向量数据的数据库，广泛应用于机器学习和人工智能领域，尤其是在相似性搜索、最近邻搜索和聚类等任务中。以下是对 LanceDB 的简要介绍： ### 主要特"
+    },
+    {
+      "title": "JVM的退出方式",
+      "url": "https://halo.mosuyang.org/archives/jvmde-tui-chu-fang-shi",
+      "date": "2024-08-26",
+      "categories": [
+        "java"
+      ],
+      "excerpt": "JVM 可以通过多种方式退出，通常可以归为以下几种类型： ### 1. 正常退出 - `System.exit(int status)`: - 这是最常见的退出方式之一。你可以通过调用 System.exit() 方法来显式退出 JVM。这个方法会停止所有正在运行的线程，执行所有"
+    },
+    {
+      "title": "各大AI平台",
+      "url": "https://halo.mosuyang.org/archives/ge-da-aiping-tai",
+      "date": "2024-08-23",
+      "categories": [
+        "AI",
+        "LLM"
+      ],
+      "excerpt": "在选anyLLM模型时，发现了很多AI平台，大部分都没见过，在这查些资料，记录下 LLM Ranking: https://openrouter.ai/rankings Summary: 感觉新颖的： Perplexity AI 界面令人眼前一亮 问答界面，图片与信息源同生成且很"
+    },
+    {
+      "title": "AnythingLLM",
+      "url": "https://halo.mosuyang.org/archives/anythingllm",
+      "date": "2024-08-21",
+      "categories": [],
+      "excerpt": "项目介绍 AnythingLLM 是一个开源项目，旨在帮助开发者和组织通过简单的界面和工具集成大型语言模型（LLM）到他们的应用程序中。该项目简化了与LLM的交互，使开发者能够更容易地利用这些强大的模型来构建智能应用，例如聊天机器人、内容生成工具和自动化任务处理系统。通过使用An"
+    }
+  ],
+  "categories": [
+    {
+      "name": "LLM",
+      "count": 32,
+      "url": "https://halo.mosuyang.org/categories/llm"
+    },
+    {
+      "name": "AI",
+      "count": 20,
+      "url": "https://halo.mosuyang.org/categories/ai"
+    },
+    {
+      "name": "Agent",
+      "count": 18,
+      "url": "https://halo.mosuyang.org/categories/agent"
+    },
+    {
+      "name": "Model原理",
+      "count": 8,
+      "url": "https://halo.mosuyang.org/categories/modelyuan-li"
+    },
+    {
+      "name": "RAG",
+      "count": 7,
+      "url": "https://halo.mosuyang.org/categories/rag"
+    },
+    {
+      "name": "Evaluate",
+      "count": 4,
+      "url": "https://halo.mosuyang.org/categories/evaluate"
+    },
+    {
+      "name": "finetuning",
+      "count": 4,
+      "url": "https://halo.mosuyang.org/categories/finetuning"
+    },
+    {
+      "name": "LangChain",
+      "count": 4,
+      "url": "https://halo.mosuyang.org/categories/langchain"
+    },
+    {
+      "name": "BlockChain",
+      "count": 3,
+      "url": "https://halo.mosuyang.org/categories/blockchain"
+    },
+    {
+      "name": "RL",
+      "count": 3,
+      "url": "https://halo.mosuyang.org/categories/rl"
+    },
+    {
+      "name": "OpenAI",
+      "count": 3,
+      "url": "https://halo.mosuyang.org/categories/openai"
+    },
+    {
+      "name": "solana",
+      "count": 2,
+      "url": "https://halo.mosuyang.org/categories/solana"
+    },
+    {
+      "name": "LMM安全",
+      "count": 2,
+      "url": "https://halo.mosuyang.org/categories/lmman-quan"
+    },
+    {
+      "name": "MultiModal",
+      "count": 2,
+      "url": "https://halo.mosuyang.org/categories/multimodal"
+    },
+    {
+      "name": "LLM部署",
+      "count": 1,
+      "url": "https://halo.mosuyang.org/categories/llmbu-shu"
+    },
+    {
+      "name": "workflow",
+      "count": 1,
+      "url": "https://halo.mosuyang.org/categories/workflow"
+    },
+    {
+      "name": "其他学习资料链接",
+      "count": 1,
+      "url": "https://halo.mosuyang.org/categories/qi-ta-xue-xi-zi-liao-lian-jie"
+    },
+    {
+      "name": "KG",
+      "count": 1,
+      "url": "https://halo.mosuyang.org/categories/kg"
+    },
+    {
+      "name": "AI大模型之美",
+      "count": 1,
+      "url": "https://halo.mosuyang.org/categories/aida-mo-xing-zhi-mei"
+    },
+    {
+      "name": "web安全",
+      "count": 1,
+      "url": "https://halo.mosuyang.org/categories/weban-quan"
+    },
+    {
+      "name": "安全",
+      "count": 1,
+      "url": "https://halo.mosuyang.org/categories/an-quan"
+    },
+    {
+      "name": "java",
+      "count": 1,
+      "url": "https://halo.mosuyang.org/categories/java"
+    }
+  ]
+}

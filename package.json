@@ -5,8 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
+    "prebuild": "node scripts/fetch-blog.mjs",
     "build": "vite build",
-    "preview": "vite preview --host 127.0.0.1"
+    "preview": "vite preview --host 127.0.0.1",
+    "fetch:blog": "node scripts/fetch-blog.mjs"
   },
   "dependencies": {
     "@vitejs/plugin-react": "5.0.4",
