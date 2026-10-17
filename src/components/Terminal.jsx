@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import blog from "../data/blog.json";
-import { CLUSTERS, PROJECTS, TOPICS, projectByName } from "../data/graph.js";
+import { blog } from "../data/store.js";
+import { CLUSTERS, PROJECTS, TOPICS, linkOf, projectByName } from "../data/graph.js";
 import { contacts, profile } from "../data/site.js";
 import { useI18n } from "../i18n.jsx";
 import { useTheme } from "../theme.jsx";
@@ -86,9 +86,9 @@ export function Terminal({ open, onClose, onFocus }) {
       case "visit": {
         const project = findProject(cmd, arg, "visit <project>");
         if (project) {
-          if (project.live) {
-            addLine(cmd, fmt(t("term.visiting"), { url: project.live }));
-            window.open(project.live, "_blank", "noopener");
+          if (linkOf(project)) {
+            addLine(cmd, fmt(t("term.visiting"), { url: linkOf(project) }));
+            window.open(linkOf(project), "_blank", "noopener");
           } else {
             addLine(cmd, fmt(t("term.noLive"), { name: project.name }));
           }

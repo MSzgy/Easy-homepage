@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { ArrowDown } from "lucide-react";
-import blog from "../data/blog.json";
+import { blog } from "../data/store.js";
 import { PROJECTS, liveCount } from "../data/graph.js";
 import { contacts, profile } from "../data/site.js";
 import { useI18n } from "../i18n.jsx";

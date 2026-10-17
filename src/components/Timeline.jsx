@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import blog from "../data/blog.json";
+import { blog } from "../data/store.js";
 import { POST_LINKS, PROJECTS, nodeById } from "../data/graph.js";
 import { useI18n } from "../i18n.jsx";
 import { daysBetween, fmt, useInView } from "../lib/util.js";
@@ -93,7 +93,7 @@ export function Timeline({ onFocus }) {
           <text className="tl-track" x={PAD_X} y={POST_Y - 18}>{t("timeline.posts")} · {blog.posts.length}</text>
           <text className="tl-track" x={PAD_X} y={PROJECT_Y - 14}>{t("timeline.projects")} · {PROJECTS.length}</text>
 
-          {PAIRS.map((pair) => {
+          {PAIRS.map((pair, index) => {
             const x1 = scale.x(pair.post.date);
             const x2 = scale.x(pair.project.created);
             const mid = (POST_Y + PROJECT_Y) / 2;
@@ -101,7 +101,8 @@ export function Timeline({ onFocus }) {
               <path
                 key={`${pair.post.title}-${pair.project.id}`}
                 className={active(pair) ? "tl-arc" : "tl-arc dim"}
-                style={{ "--chip": `var(--c-${pair.project.cluster})` }}
+                style={{ "--chip": `var(--c-${pair.project.cluster})`, "--i": index }}
+                pathLength="1"
                 d={`M ${x1} ${POST_Y} C ${x1} ${mid}, ${x2} ${mid}, ${x2} ${PROJECT_Y}`}
               />
             );

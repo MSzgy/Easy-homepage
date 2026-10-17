@@ -1,0 +1,23 @@
+[Unit]
+Description=Sync blog and GitHub data for mosuyang.org
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/node /opt/easy-homepage/sync/sync-live.mjs /var/lib/easy-homepage/live.json
+TimeoutStartSec=120
+# Throwaway unprivileged user; it can write only /var/lib/easy-homepage.
+DynamicUser=yes
+StateDirectory=easy-homepage
+StateDirectoryMode=0755
+UMask=0022
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+NoNewPrivileges=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX

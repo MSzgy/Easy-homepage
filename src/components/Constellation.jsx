@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, ExternalLink, Github, Lock } from "lucide-react";
-import blog from "../data/blog.json";
-import { CLUSTERS, EDGES, NODES, PROJECTS, nodeById, postsForProject } from "../data/graph.js";
+import { blog } from "../data/store.js";
+import { CLUSTERS, EDGES, NODES, PROJECTS, linkOf, nodeById, postsForProject } from "../data/graph.js";
 import { useI18n } from "../i18n.jsx";
 import { cssRgb, fmt, pick, prefersReducedMotion, useInView } from "../lib/util.js";
 
@@ -59,6 +59,8 @@ export function Constellation({ stageRef, selectedId, onSelect, cluster, onClust
     let frameId = 0;
     let running = false;
     let frame = 0;
+    // Draw-in on first view: edges grow out, then nodes fade in.
+    let revealStart = null;
     let colors = { ...FALLBACK_RGB, text: "242, 247, 245" };
 
     const nodes = NODES.map((node) => ({ ...node, x: 0, y: 0, vx: 0, vy: 0 }));
@@ -153,6 +155,7 @@ export function Constellation({ stageRef, selectedId, onSelect, cluster, onClust
     };
 
     const draw = (time) => {
+      const reveal = reduceMotion ? 1 : revealStart === null ? 0 : Math.min(1, (time - revealStart) / 1800);
       const { hoverId: hover, selectedId: selected, cluster: onlyCluster, liveOnly: onlyLive, label: nameOf, center } = viewRef.current;
       const focus = byId[hover] ?? byId[selected] ?? null;
       const linked = focus ? new Set([focus.id, ...neighbors(focus.id).flatMap((edge) => [edge.from, edge.to])]) : null;
@@ -178,7 +181,9 @@ export function Constellation({ stageRef, selectedId, onSelect, cluster, onClust
       context.fillStyle = `rgba(${colors.text}, 0.62)`;
       context.fillText(center, width / 2, height / 2 + 44);
 
-      edges.forEach((edge) => {
+      edges.forEach((edge, edgeIndex) => {
+        const grow = Math.max(0, Math.min(1, reveal * 1.8 - (edgeIndex / edges.length) * 0.8));
+        if (grow <= 0) return;
         const touchesFocus = focus && (edge.a === focus || edge.b === focus);
         const alpha = linked ? (touchesFocus ? 1 : 0.05) : Math.min(alphaOf(edge.a), alphaOf(edge.b));
         const rgb = edge.kind === "learn" ? colors.blog : edge.kind === "host" ? colors.infra : colors[edge.a.cluster];
@@ -188,10 +193,10 @@ export function Constellation({ stageRef, selectedId, onSelect, cluster, onClust
         context.strokeStyle = `rgba(${rgb}, ${base * alpha})`;
         context.beginPath();
         context.moveTo(edge.a.x, edge.a.y);
-        context.lineTo(edge.b.x, edge.b.y);
+        context.lineTo(edge.a.x + (edge.b.x - edge.a.x) * grow, edge.a.y + (edge.b.y - edge.a.y) * grow);
         context.stroke();
         context.setLineDash([]);
-        if (edge.kind === "flow") {
+        if (edge.kind === "flow" && grow >= 1) {
           if (!reduceMotion) edge.dots = edge.dots.map((value) => (value + 0.0042) % 1);
           edge.dots.forEach((value) => {
             context.fillStyle = `rgba(${rgb}, ${0.95 * alpha})`;
@@ -203,7 +208,7 @@ export function Constellation({ stageRef, selectedId, onSelect, cluster, onClust
       });
 
       nodes.forEach((node) => {
-        const alpha = alphaOf(node);
+        const alpha = alphaOf(node) * Math.min(1, reveal * 2.5);
         const rgb = colors[node.cluster];
         const r = radius(node);
         if (node.live && node.type === "project") {
@@ -262,6 +267,7 @@ export function Constellation({ stageRef, selectedId, onSelect, cluster, onClust
     const start = () => {
       if (running) return;
       running = true;
+      if (revealStart === null) revealStart = performance.now();
       frameId = window.requestAnimationFrame(loop);
     };
     const stop = () => {
@@ -414,7 +420,7 @@ export function Constellation({ stageRef, selectedId, onSelect, cluster, onClust
 
 export function SectionHead({ kicker, title, sub }) {
   return (
-    <header className="section-head">
+    <header className="section-head" data-num={kicker.slice(0, 2)}>
       <p className="kicker">{kicker}</p>
       <h2>{title}</h2>
       {sub ? <p className="section-sub">{sub}</p> : null}
@@ -499,8 +505,8 @@ function NodeDetails({ node, onSelect, label }) {
       ) : null}
 
       <div className="panel-actions">
-        {node.live ? (
-          <a className="action primary" href={node.live} target="_blank" rel="noreferrer">
+        {linkOf(node) ? (
+          <a className="action primary" href={linkOf(node)} target="_blank" rel="noreferrer">
             <ExternalLink size={14} />{t("graph.visit")}
           </a>
         ) : null}

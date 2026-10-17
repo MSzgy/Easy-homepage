@@ -71,7 +71,9 @@ export function AmbientCanvas({ oRef, targetRef }) {
         context.fill();
       });
 
-      if (!reduceMotion && !light) {
+      // Phones: no meteors, and the hero orbits stay small and faint behind the text.
+      const narrow = width < 720;
+      if (!reduceMotion && !light && !narrow) {
         if (now > nextMeteor) {
           const speed = Math.random() * 8 + 6;
           meteors.push({
@@ -125,11 +127,11 @@ export function AmbientCanvas({ oRef, targetRef }) {
       const cy = sourceY + (targetY - sourceY) * p;
 
       // Hero orbits fade out on the way; the constellation takes over.
-      const orbitAlpha = 1 - smoothstep(0, 0.55, p);
+      const orbitAlpha = (1 - smoothstep(0, 0.55, p)) * (narrow ? 0.35 : 1);
       if (orbitAlpha > 0.01) {
         const scale = Math.min(width, height) / 720;
-        const a = Math.max(136, 218 * scale);
-        const b = Math.max(48, 82 * scale);
+        const a = narrow ? width * 0.3 : Math.max(136, 218 * scale);
+        const b = narrow ? width * 0.11 : Math.max(48, 82 * scale);
         const tilt = -0.42;
         const spin = reduceMotion ? 0.8 : elapsed;
         const point = (rx, ry, angle) => {
@@ -165,7 +167,7 @@ export function AmbientCanvas({ oRef, targetRef }) {
         context.fill();
       }
 
-      const glowSize = 92 * (1 + p * 0.7);
+      const glowSize = (narrow ? 56 : 92) * (1 + p * 0.7);
       const glow = context.createRadialGradient(cx, cy, 0, cx, cy, glowSize);
       glow.addColorStop(0, `rgba(${primary}, ${light ? 0.55 : 0.82})`);
       glow.addColorStop(0.4, `rgba(${primary}, ${light ? 0.12 : 0.2})`);

@@ -9,11 +9,38 @@ import { Pipeline } from "./components/Pipeline.jsx";
 import { Terminal } from "./components/Terminal.jsx";
 import { Timeline } from "./components/Timeline.jsx";
 import { TopBar } from "./components/TopBar.jsx";
+import { StoryPage } from "./components/StoryPage.jsx";
+import { useAudience } from "./audience.jsx";
 import { useTheme } from "./theme.jsx";
 import { scrollToId } from "./lib/util.js";
 
 const KONAMI = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"];
 const isTyping = (target) => target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA");
+
+// --sy (scroll px) and --sp (0..1 page progress) on <html>, for CSS scroll effects.
+function useScrollVars() {
+  useEffect(() => {
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const root = document.documentElement;
+      const max = Math.max(1, root.scrollHeight - window.innerHeight);
+      root.style.setProperty("--sy", String(Math.round(window.scrollY)));
+      root.style.setProperty("--sp", (window.scrollY / max).toFixed(4));
+    };
+    const onScroll = () => {
+      if (!frame) frame = window.requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, []);
+}
 
 function useKonami(onActivate) {
   const [active, setActive] = useState(false);
@@ -48,6 +75,35 @@ function useKonami(onActivate) {
 }
 
 export function App() {
+  const { audience, toggleAudience } = useAudience();
+  useScrollVars();
+
+  useEffect(() => {
+    const skeleton = document.getElementById("boot-skeleton");
+    if (!skeleton) return undefined;
+    const timer = window.setTimeout(() => {
+      skeleton.classList.add("hidden");
+      window.setTimeout(() => skeleton.remove(), 500);
+    }, 350);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  return audience === "story" ? <StoryApp onOpenGeek={toggleAudience} /> : <GeekApp />;
+}
+
+function StoryApp({ onOpenGeek }) {
+  return (
+    <div className="app-shell story-shell">
+      <CustomCursor />
+      <TopBar />
+      <main>
+        <StoryPage onOpenGeek={onOpenGeek} />
+      </main>
+    </div>
+  );
+}
+
+function GeekApp() {
   const { cycleColor } = useTheme();
   const konamiActive = useKonami(cycleColor);
   const oRef = useRef(null);
@@ -79,21 +135,12 @@ export function App() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  useEffect(() => {
-    const skeleton = document.getElementById("boot-skeleton");
-    if (!skeleton) return undefined;
-    const timer = window.setTimeout(() => {
-      skeleton.classList.add("hidden");
-      window.setTimeout(() => skeleton.remove(), 500);
-    }, 350);
-    return () => window.clearTimeout(timer);
-  }, []);
-
   return (
     <div className={`app-shell ${konamiActive ? "konami-active" : ""}`}>
       <AmbientCanvas oRef={oRef} targetRef={stageRef} />
       <CustomCursor />
       <div className="grid-overlay" aria-hidden="true" />
+      <div className="scroll-progress" aria-hidden="true" />
       <TopBar onOpenTerminal={openTerminal} />
       <main>
         <Hero oRef={oRef} onSelect={focusNode} onShowLive={showLive} />

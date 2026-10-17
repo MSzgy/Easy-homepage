@@ -1,5 +1,5 @@
 import { ExternalLink } from "lucide-react";
-import blog from "../data/blog.json";
+import { blog } from "../data/store.js";
 import { POST_LINKS, nodeById } from "../data/graph.js";
 import { useI18n } from "../i18n.jsx";
 import { fmt, useInView } from "../lib/util.js";
@@ -26,10 +26,10 @@ export function Blog({ onFocus }) {
         <div>
           <p className="panel-kicker">{t("blog.latest")}</p>
           <ul className="blog-list">
-            {featured.map((post) => {
+            {featured.map((post, index) => {
               const linked = linksFor(post.title);
               return (
-                <li key={post.url + post.title} className="glass-card">
+                <li key={post.url + post.title} className="glass-card" style={{ "--i": index }}>
                   <time>{post.date}</time>
                   <a className="blog-title" href={post.url} target="_blank" rel="noreferrer">{post.title}</a>
                   <div className="blog-meta">

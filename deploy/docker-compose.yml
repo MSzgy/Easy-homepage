@@ -11,3 +11,6 @@ services:
     volumes:
       - ./dist:/usr/share/nginx/html:ro
       - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./security-headers.conf:/etc/nginx/security-headers.conf:ro
+      # Written hourly by easy-homepage-sync.service (systemd StateDirectory).
+      - /var/lib/easy-homepage:/usr/share/nginx/html/data:ro
