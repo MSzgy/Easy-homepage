@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { EDGES, ROADS, nodeById } from "../data/graph.js";
 import { clamp, cssRgb, prefersReducedMotion } from "../lib/util.js";
+import { createTerrain } from "../lib/terrain-gl.js";
 
 // Story mode background: a living contour map. Roads leave "home" toward each
 // blog direction; the projects that direction led to sit along the road.
@@ -59,6 +60,7 @@ const easeOut = (t) => 1 - (1 - t) ** 3;
 
 export function StoryMap({ viewRef, cardRef }) {
   const canvasRef = useRef(null);
+  const terrainRef = useRef(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -78,6 +80,9 @@ export function StoryMap({ viewRef, cardRef }) {
     const start = performance.now();
     const pointer = { x: 0.5, y: 0.5, sx: -999, sy: -999 };
     const camera = { x: 0, y: 0, zoom: reduceMotion ? 1 : 2.3 };
+    // GPU terrain when available; otherwise the CPU contour fallback below.
+    let terrain = createTerrain(terrainRef.current);
+    if (terrain) document.documentElement.classList.add("story-gl");
 
     const readColors = () => {
       colors = {
@@ -126,6 +131,8 @@ export function StoryMap({ viewRef, cardRef }) {
       canvas.width = Math.floor(width * ratio);
       canvas.height = Math.floor(height * ratio);
       context.setTransform(ratio, 0, 0, ratio, 0, 0);
+      // The terrain is soft by design, so it can render below full resolution.
+      terrain?.resize(width, height, Math.min(mobile ? 1 : 1.5, ratio));
       layout();
     };
 
@@ -137,6 +144,8 @@ export function StoryMap({ viewRef, cardRef }) {
       return {
         scale,
         scroll,
+        ox,
+        oy,
         toScreen: (p) => ({ x: ox + (p.x - camera.x) * scale, y: oy + (p.y - camera.y) * scale }),
         toWorld: (x, y) => ({ x: (x - ox) / scale + camera.x, y: (y - oy) / scale + camera.y }),
       };
@@ -208,6 +217,34 @@ export function StoryMap({ viewRef, cardRef }) {
 
       const v = view();
       const { bg, line, text, light } = colors;
+      if (terrain?.lost) {
+        terrain = null;
+        document.documentElement.classList.remove("story-gl");
+      }
+
+      if (terrain) {
+        terrain.render({
+          origin: { x: v.ox, y: v.oy },
+          scale: v.scale,
+          camera,
+          time: reduceMotion ? 0 : time,
+          grainTime: reduceMotion ? 0 : Math.floor(time * 12) / 12,
+          intro,
+          light,
+          colors,
+        });
+        context.clearRect(0, 0, width, height);
+      } else {
+        drawCpuTerrain(time, v, intro);
+      }
+
+      drawScene(time, v, state, selected, focusRoad);
+      frame += 1;
+      frameId = window.requestAnimationFrame(draw);
+    };
+
+    const drawCpuTerrain = (time, v, intro) => {
+      const { bg, line, light } = colors;
       if (frame % 2 === 0 || !contours.length) buildContours(time, v);
 
       context.fillStyle = `rgb(${bg})`;
@@ -240,7 +277,13 @@ export function StoryMap({ viewRef, cardRef }) {
           context.fillRect(0, 0, width, height);
         });
       }
+    };
 
+    // Roads, travelers, bridges, home, places, labels: always on the 2D canvas.
+    const drawScene = (time, v, state, selected, focusRoad) => {
+      const { bg, text, light } = colors;
+      const selectedPlace = roads.flatMap((road) => road.places).find((place) => place.id === selected);
+      const focusedRoad = roads.find((road) => road.topic === focusRoad);
       const home = v.toScreen({ x: 0, y: 0 });
       const roadAlpha = (road) => {
         if (selectedPlace) return selectedPlace.road === road || bridges.some((b) => (b.a.id === selected || b.b.id === selected) && (b.a.road === road || b.b.road === road)) ? 1 : 0.22;
@@ -284,6 +327,8 @@ export function StoryMap({ viewRef, cardRef }) {
           for (let k = 0; k < 3; k += 1) {
             const t = (time * 0.055 + k / 3 + road.index * 0.13) % 1;
             const span = unfinished ? 0.95 : 1;
+            context.shadowColor = `rgba(${rgb}, 0.9)`;
+            context.shadowBlur = light ? 4 : 12;
             [0, 0.012, 0.024].forEach((lag, n) => {
               const s = v.toScreen(road.at(Math.max(0, t * span - lag)));
               context.fillStyle = `rgba(${rgb}, ${(n === 0 ? 0.95 : 0.4 - n * 0.12) * alpha * (unfinished ? 1 - t : 1)})`;
@@ -291,6 +336,7 @@ export function StoryMap({ viewRef, cardRef }) {
               context.arc(s.x, s.y, n === 0 ? 2.4 : 1.6, 0, Math.PI * 2);
               context.fill();
             });
+            context.shadowBlur = 0;
           }
         }
 
@@ -303,6 +349,11 @@ export function StoryMap({ viewRef, cardRef }) {
           const signWidth = Math.max(context.measureText(name).width, context.measureText(note).width * 0.8);
           end.x = end.x < home.x ? Math.max(end.x, signWidth + 10) : Math.min(end.x, width - signWidth - 10);
           end.y = clamp(end.y, 70, height - 30);
+          // Keep signposts off the headline block: lift them just above it.
+          const box = state.intro?.getBoundingClientRect();
+          if (box && end.x > box.left - 40 && end.x < box.right + 40 && end.y > box.top - 34 && end.y < box.bottom + 16) {
+            end.y = box.top - 34;
+          }
           context.textAlign = end.x < home.x ? "right" : "left";
           context.font = `600 ${mobile ? 13 : 15}px ${state.font}`;
           context.fillStyle = `rgba(${rgb}, ${alpha})`;
@@ -383,7 +434,18 @@ export function StoryMap({ viewRef, cardRef }) {
           const s = v.toScreen(place);
           const active = place.id === selected || place.id === hoverId;
           const alpha = (selected ? (place.id === selected || bridges.some((b) => (b.a.id === selected && b.b.id === place.id) || (b.b.id === selected && b.a.id === place.id)) ? 1 : 0.3) : roadAlpha(road)) * fadeOut;
-          if (place.node.live && !reduceMotion) {
+          // Live status from the 5-minute checks; fall back to "has a live URL".
+          const service = state.status?.services?.[place.id];
+          const running = service ? service.ok : place.node.live;
+          if (service && !service.ok) {
+            context.setLineDash([3, 4]);
+            context.strokeStyle = `rgba(${colors.create}, ${0.9 * alpha})`;
+            context.beginPath();
+            context.arc(s.x, s.y, 14, 0, Math.PI * 2);
+            context.stroke();
+            context.setLineDash([]);
+          }
+          if (running && !reduceMotion) {
             const pulse = (time * 0.6 + place.t) % 1;
             context.strokeStyle = `rgba(${rgb}, ${(1 - pulse) * 0.6 * alpha})`;
             context.beginPath();
@@ -436,9 +498,6 @@ export function StoryMap({ viewRef, cardRef }) {
       vignette.addColorStop(1, `rgba(${bg}, ${light ? 0.55 : 0.85})`);
       context.fillStyle = vignette;
       context.fillRect(0, 0, width, height);
-
-      frame += 1;
-      frameId = window.requestAnimationFrame(draw);
     };
 
     const pick = (x, y) => {
@@ -487,9 +546,15 @@ export function StoryMap({ viewRef, cardRef }) {
       canvas.removeEventListener("pointermove", onMove);
       canvas.removeEventListener("click", onClick);
       window.removeEventListener("resize", onResize);
-      document.documentElement.classList.remove("cursor-armed");
+      document.documentElement.classList.remove("cursor-armed", "story-gl");
+      terrain?.destroy();
     };
   }, [viewRef, cardRef]);
 
-  return <canvas className="story-map" ref={canvasRef} aria-hidden="true" />;
+  return (
+    <>
+      <canvas className="story-terrain" ref={terrainRef} aria-hidden="true" />
+      <canvas className="story-map" ref={canvasRef} aria-hidden="true" />
+    </>
+  );
 }

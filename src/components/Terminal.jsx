@@ -1,14 +1,35 @@
 import { useEffect, useRef, useState } from "react";
-import { blog } from "../data/store.js";
+import { blog, commits } from "../data/store.js";
+import { getStatus, refreshStatus, upCount } from "../data/status.js";
 import { CLUSTERS, PROJECTS, TOPICS, linkOf, projectByName } from "../data/graph.js";
 import { contacts, profile } from "../data/site.js";
 import { useI18n } from "../i18n.jsx";
 import { useTheme } from "../theme.jsx";
 import { fmt, pick, scrollToId } from "../lib/util.js";
 
-const COMMANDS = ["help", "ls", "open", "visit", "blog", "whoami", "contact", "graph", "pipeline", "timeline", "theme", "mode", "lang", "date", "echo", "clear", "exit", "sudo"];
+const COMMANDS = ["help", "ls", "open", "visit", "blog", "whoami", "contact", "neofetch", "top", "git", "reboot", "graph", "pipeline", "timeline", "theme", "mode", "lang", "date", "echo", "clear", "exit", "sudo"];
+const ONLINE_SINCE = "2026-06-28";
+const LOGO = ["   ▄▄▄▄▄▄▄   ", "  █ ▄▄▄▄▄ █  ", "  █ █{/}█ █  ", "  █ █▄▄▄█ █  ", "  █▄▄▄▄▄▄▄█  ", "             ", "             ", "             ", "             "];
+const STACK = [...new Set(PROJECTS.flatMap((project) => project.stack))].filter((item) => ["TypeScript", "Python", "Rust", "Go", "React", "Next.js", "FastAPI"].includes(item));
 
-export function Terminal({ open, onClose, onFocus }) {
+const ago = (iso, lang) => {
+  const minutes = Math.round((Date.now() - Date.parse(iso)) / 60000);
+  const rtf = new Intl.RelativeTimeFormat(lang, { numeric: "auto" });
+  if (Math.abs(minutes) < 60) return rtf.format(-minutes, "minute");
+  if (Math.abs(minutes) < 1440) return rtf.format(-Math.round(minutes / 60), "hour");
+  return rtf.format(-Math.round(minutes / 1440), "day");
+};
+
+// Status rows for `top`: current state plus availability over the last 6 hours.
+const topRows = (status, t, lang) =>
+  PROJECTS.filter((project) => status.services[project.id]).map((project) => {
+    const service = status.services[project.id];
+    const checks = service.history ?? [];
+    const uptime = checks.length ? Math.round((checks.filter((c) => c.ok).length / checks.length) * 1000) / 10 : 0;
+    return `  ${project.name.padEnd(22)} ${(service.ok ? t("term.up") : t("term.down")).padEnd(6)} ${String(service.ms ?? "—").padStart(5)} ms   ${String(uptime).padStart(5)}%   ${pick(project.nick, lang)}`;
+  });
+
+export function Terminal({ open, onClose, onFocus, onReboot }) {
   const { toggleMode, cycleColor, mode } = useTheme();
   const { t, lang, toggleLang } = useI18n();
   const [input, setInput] = useState("");
@@ -19,6 +40,35 @@ export function Terminal({ open, onClose, onFocus }) {
   const scrollRef = useRef(null);
 
   const addLine = (prompt, output) => setHistory((lines) => [...lines, { prompt, output }]);
+
+  const neofetch = () => {
+    const { up, total } = upCount(getStatus());
+    const counts = Object.entries(
+      blog.posts.flatMap((post) => post.categories).reduce((acc, name) => ({ ...acc, [name]: (acc[name] ?? 0) + 1 }), {}),
+    ).sort((a, b) => b[1] - a[1]).slice(0, 3);
+    const info = [
+      <><b className="tc-green">mosu</b>@<b className="tc-blue">mosuyang.org</b></>,
+      <span className="tc-dim">{"─".repeat(22)}</span>,
+      [t("term.nfRole"), t("term.nfRoleValue")],
+      [t("term.nfOnline"), fmt(t("term.nfSince"), { date: ONLINE_SINCE })],
+      [t("term.nfProjects"), `${PROJECTS.length} (${PROJECTS.filter((p) => p.live).length} ${t("term.liveTag")})`],
+      [t("term.nfNotes"), `${blog.posts.length} · ${counts.map(([name, n]) => `${name} ${n}`).join(" · ")}`],
+      [t("term.nfStack"), STACK.join(" · ")],
+      [t("term.nfServices"), total ? `${up}/${total} ${t("term.up")}` : t("term.noStatus")],
+      <span className="tc-swatches"><i className="tc-bg-green" /><i className="tc-bg-blue" /><i className="tc-bg-purple" /><i className="tc-bg-orange" /><i className="tc-bg-amber" /></span>,
+    ];
+    return (
+      <div className="neofetch">
+        {info.map((row, i) => (
+          <div key={i}>
+            <span className="tc-green">{LOGO[i] ?? " ".repeat(13)}</span>
+            {"  "}
+            {Array.isArray(row) ? <><span className="tc-blue">{row[0].padEnd(9)}</span> {row[1]}</> : row}
+          </div>
+        ))}
+      </div>
+    );
+  };
 
   const findProject = (cmd, arg, usage) => {
     if (!arg) {
@@ -99,6 +149,38 @@ export function Terminal({ open, onClose, onFocus }) {
         addLine(cmd, fmt(t("term.visiting"), { url: blog.url }));
         window.open(blog.url, "_blank", "noopener");
         break;
+      case "neofetch":
+        addLine(cmd, neofetch());
+        break;
+      case "git": {
+        if (args[0] !== "log") {
+          addLine(cmd, fmt(t("term.usage"), { usage: "git log [-n 5]" }));
+          break;
+        }
+        const n = Math.min(12, Number(args[args.indexOf("-n") + 1]) || 6);
+        addLine(
+          cmd,
+          commits.length
+            ? commits.slice(0, n).map((c) => `${c.sha}  (${c.repo})  ${c.message}  · ${ago(c.date, lang)}`).join("\n")
+            : t("term.noCommits"),
+        );
+        break;
+      }
+      case "top": {
+        const show = (status) =>
+          addLine(cmd, status ? [`  ${t("term.topHead")}`, ...topRows(status, t, lang), "", `  ${fmt(t("term.topChecked"), { time: ago(status.checkedAt, lang) })}`].join("\n") : t("term.noStatus"));
+        const status = getStatus();
+        if (status) show(status);
+        else refreshStatus().then(show);
+        break;
+      }
+      case "reboot":
+        addLine(cmd, t("term.reboot"));
+        window.setTimeout(() => {
+          onClose?.();
+          onReboot?.();
+        }, 400);
+        break;
       case "graph":
       case "pipeline":
       case "timeline":
@@ -156,7 +238,7 @@ export function Terminal({ open, onClose, onFocus }) {
       return;
     }
     const prefix = rest.join(" ").toLowerCase();
-    const pool = name === "ls" ? ["projects", "posts", "topics"] : PROJECTS.map((project) => project.name);
+    const pool = name === "ls" ? ["projects", "posts", "topics"] : name === "git" ? ["log"] : PROJECTS.map((project) => project.name);
     const match = pool.filter((item) => item.toLowerCase().startsWith(prefix));
     if (match.length === 1) setInput(`${name} ${match[0]}`);
     else if (match.length > 1) addLine(input, match.join("  "));
@@ -240,7 +322,9 @@ export function Terminal({ open, onClose, onFocus }) {
                   <span className="term-cmd">{item.prompt}</span>
                 </div>
               ) : null}
-              {item.output ? <pre className="term-output">{item.output}</pre> : null}
+              {item.output ? (
+                typeof item.output === "string" ? <pre className="term-output">{item.output}</pre> : <div className="term-output">{item.output}</div>
+              ) : null}
             </div>
           ))}
           <div className="term-prompt term-input-line">

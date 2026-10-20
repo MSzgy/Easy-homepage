@@ -1,23 +1,46 @@
-// Server-side sync: writes live.json, which the homepage reads at runtime.
-// Run by the easy-homepage-sync systemd timer; usage: node sync-live.mjs <output path>
+// Server-side sync, run every 5 minutes by easy-homepage-sync.timer.
+// usage: node sync-live.mjs <data dir>
+//   status.json  every run: are the public apps up, and how fast (last 6 hours)
+//   live.json    hourly: blog posts, public repos, recent commits
 // Each source is independent: if one fails, its last good data is kept.
 import { readFile, rename, writeFile } from "node:fs/promises";
-import { fetchBlog, fetchGitHub } from "./sources.mjs";
+import { join } from "node:path";
+import { checkStatus, fetchBlog, fetchGitHub } from "./sources.mjs";
 
-const out = process.argv[2] ?? "live.json";
-const previous = await readFile(out, "utf8").then(JSON.parse).catch(() => ({}));
-const [blog, github] = await Promise.allSettled([fetchBlog(), fetchGitHub()]);
+const dir = process.argv[2] ?? ".";
+const CONTENT_EVERY_MS = 55 * 60 * 1000;
+const HISTORY = 72; // 72 checks x 5 minutes = 6 hours
 
-const next = {
-  generatedAt: new Date().toISOString(),
-  blog: blog.status === "fulfilled" ? { ...blog.value, fetchedAt: new Date().toISOString() } : previous.blog ?? null,
-  github: github.status === "fulfilled" ? { ...github.value, fetchedAt: new Date().toISOString() } : previous.github ?? null,
+const readJson = (name) => readFile(join(dir, name), "utf8").then(JSON.parse).catch(() => ({}));
+// Write then rename, so nginx never serves a half-written file.
+const writeJson = async (name, data) => {
+  await writeFile(join(dir, `${name}.tmp`), JSON.stringify(data));
+  await rename(join(dir, `${name}.tmp`), join(dir, name));
 };
 
-// Write then rename, so nginx never serves a half-written file.
-await writeFile(`${out}.tmp`, JSON.stringify(next));
-await rename(`${out}.tmp`, out);
+const now = new Date().toISOString();
 
-for (const [name, result] of [["blog", blog], ["github", github]]) {
-  console.log(result.status === "fulfilled" ? `${name}: ok` : `${name}: failed (${result.reason.message}), kept previous`);
+const previousStatus = await readJson("status.json");
+const checks = await checkStatus();
+const services = Object.fromEntries(
+  checks.map(({ id, ok, code, ms }) => {
+    const history = [...(previousStatus.services?.[id]?.history ?? []), { t: now, ok, ms }].slice(-HISTORY);
+    return [id, { ok, code, ms, history }];
+  }),
+);
+await writeJson("status.json", { checkedAt: now, services });
+console.log(`status: ${checks.filter((c) => c.ok).length}/${checks.length} up`);
+
+const previous = await readJson("live.json");
+const stale = !previous.generatedAt || Date.now() - Date.parse(previous.generatedAt) > CONTENT_EVERY_MS;
+if (stale || process.argv.includes("--full")) {
+  const [blog, github] = await Promise.allSettled([fetchBlog(), fetchGitHub()]);
+  await writeJson("live.json", {
+    generatedAt: now,
+    blog: blog.status === "fulfilled" ? { ...blog.value, fetchedAt: now } : previous.blog ?? null,
+    github: github.status === "fulfilled" ? { ...github.value, fetchedAt: now } : previous.github ?? null,
+  });
+  for (const [name, result] of [["blog", blog], ["github", github]]) {
+    console.log(result.status === "fulfilled" ? `${name}: ok` : `${name}: failed (${result.reason.message}), kept previous`);
+  }
 }

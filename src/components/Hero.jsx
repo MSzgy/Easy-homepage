@@ -4,6 +4,7 @@ import { blog } from "../data/store.js";
 import { PROJECTS, liveCount } from "../data/graph.js";
 import { contacts, profile } from "../data/site.js";
 import { useI18n } from "../i18n.jsx";
+import { Heartbeat } from "./Heartbeat.jsx";
 
 function useTypewriter(lines, { typeSpeed = 65, eraseSpeed = 40, pauseTime = 2400 } = {}) {
   const [text, setText] = useState("");
@@ -90,6 +91,7 @@ export function Hero({ oRef, onSelect, onShowLive }) {
         </div>
       </div>
 
+      <div className="hero-side">
       <div className="hero-log glass-card" aria-label="activity log">
         <div className="log-head">
           <span className="log-dots" aria-hidden="true"><i /><i /><i /></span>
@@ -109,6 +111,8 @@ export function Hero({ oRef, onSelect, onShowLive }) {
           ))}
         </ol>
         <span className="log-caret" aria-hidden="true">▍</span>
+      </div>
+      <Heartbeat onSelect={onSelect} />
       </div>
 
       <a className="scroll-hint" href="#graph">

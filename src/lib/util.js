@@ -47,3 +47,48 @@ export function useInView(threshold = 0.15) {
 export function scrollToId(id) {
   document.getElementById(id)?.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "start" });
 }
+
+// Pinned scroll stories run only on wide screens, and never with reduced motion.
+export function usePinned(minWidth = 1081) {
+  const query = `(min-width: ${minWidth}px)`;
+  const [pinned, setPinned] = useState(() => window.matchMedia(query).matches && !prefersReducedMotion());
+  useEffect(() => {
+    const media = window.matchMedia(query);
+    const onChange = () => setPinned(media.matches && !prefersReducedMotion());
+    media.addEventListener("change", onChange);
+    return () => media.removeEventListener("change", onChange);
+  }, [query]);
+  return pinned;
+}
+
+// 0..1 progress through a tall section whose content is position: sticky.
+// Writes --p on the element every frame (no re-render) and calls onProgress.
+export function useScrollProgress(ref, enabled, onProgress) {
+  const callback = useRef(onProgress);
+  callback.current = onProgress;
+  useEffect(() => {
+    if (!enabled) return undefined;
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const node = ref.current;
+      if (!node) return;
+      const rect = node.getBoundingClientRect();
+      const total = rect.height - window.innerHeight;
+      const progress = total > 0 ? clamp(-rect.top / total) : 0;
+      node.style.setProperty("--p", progress.toFixed(4));
+      callback.current?.(progress);
+    };
+    const onScroll = () => {
+      if (!frame) frame = window.requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, [ref, enabled]);
+}

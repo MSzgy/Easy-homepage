@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { blog } from "../data/store.js";
 import { POST_LINKS, PROJECTS, nodeById } from "../data/graph.js";
 import { useI18n } from "../i18n.jsx";
-import { daysBetween, fmt, useInView } from "../lib/util.js";
+import { daysBetween, fmt, useInView, usePinned, useScrollProgress } from "../lib/util.js";
 import { SectionHead } from "./Constellation.jsx";
 
 const POST_Y = 64;
@@ -12,6 +12,7 @@ const ROW = 16;
 const PAD_X = 28;
 const DAY = 864e5;
 const CHAR_WIDTH = 6.7;
+const PAN_WIDTH = 2.3; // pinned mode: the timeline is this many viewports wide
 
 // Every post -> project pair with how many days separate them.
 const PAIRS = POST_LINKS.flatMap((link) => {
@@ -25,14 +26,18 @@ const PAIRS = POST_LINKS.flatMap((link) => {
 
 export function Timeline({ onFocus }) {
   const { t } = useI18n();
-  const [sectionRef, inView] = useInView(0.2);
+  const [sectionRef, inView] = useInView(0.12);
+  const pinned = usePinned();
   const wrapRef = useRef(null);
-  const [width, setWidth] = useState(960);
+  const svgRef = useRef(null);
+  const dateRef = useRef(null);
+  const [viewport, setViewport] = useState(960);
   const [hover, setHover] = useState(null);
+  const width = pinned ? Math.max(1800, Math.round(viewport * PAN_WIDTH)) : Math.max(720, viewport);
 
   useEffect(() => {
     const node = wrapRef.current;
-    const observer = new ResizeObserver(() => setWidth(Math.max(720, node.clientWidth)));
+    const observer = new ResizeObserver(() => setViewport(node.clientWidth));
     observer.observe(node);
     return () => observer.disconnect();
   }, []);
@@ -51,8 +56,23 @@ export function Timeline({ onFocus }) {
       if (cursor.getTime() >= start) ticks.push({ iso, label: iso.slice(0, 7).replace("-", ".") });
       cursor.setUTCMonth(cursor.getUTCMonth() + 3);
     }
-    return { x, ticks };
+    return { x, ticks, start, end };
   }, [width]);
+
+  // Pinned: scrolling pans the camera along the timeline, and the large date in
+  // the background shows the month under the center of the screen.
+  const onProgress = useCallback(
+    (progress) => {
+      const shift = (width - viewport) * progress;
+      if (svgRef.current) svgRef.current.style.transform = `translate3d(${-shift}px, 0, 0)`;
+      if (dateRef.current) {
+        const at = scale.start + ((shift + viewport / 2 - PAD_X) / (width - PAD_X * 2)) * (scale.end - scale.start);
+        dateRef.current.textContent = new Date(Math.min(at, Date.now())).toISOString().slice(0, 7).replace("-", ".");
+      }
+    },
+    [width, viewport, scale],
+  );
+  useScrollProgress(sectionRef, pinned, onProgress);
 
   // Projects cluster in time, so labels go into the first row where they fit.
   const projects = useMemo(() => {
@@ -78,10 +98,12 @@ export function Timeline({ onFocus }) {
   const active = (pair) => !hover || hover === pair.post.title || hover === pair.project.id;
 
   return (
-    <section id="timeline" className={`section timeline ${inView ? "in-view" : ""}`} ref={sectionRef}>
+    <section id="timeline" className={`section timeline ${inView ? "in-view" : ""} ${pinned ? "pinned" : ""}`} ref={sectionRef}>
+      <div className="timeline-sticky">
+      {pinned ? <p className="timeline-date" ref={dateRef} aria-hidden="true" /> : null}
       <SectionHead kicker={t("timeline.kicker")} title={t("timeline.title")} sub={t("timeline.sub")} />
       <div className="timeline-scroll glass-card" ref={wrapRef}>
-        <svg width={width} height={height} role="img" aria-label={t("timeline.title")}>
+        <svg width={width} height={height} role="img" aria-label={t("timeline.title")} ref={svgRef}>
           {scale.ticks.map((tick) => (
             <g key={tick.iso} className="tl-tick">
               <line x1={scale.x(tick.iso)} x2={scale.x(tick.iso)} y1={36} y2={height - 26} />
@@ -153,6 +175,7 @@ export function Timeline({ onFocus }) {
           </li>
         ))}
       </ul>
+      </div>
     </section>
   );
 }

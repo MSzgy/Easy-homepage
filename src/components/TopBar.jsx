@@ -1,11 +1,11 @@
-import { Code, Globe, Moon, Palette, Sparkles, Sun, SquareTerminal } from "lucide-react";
+import { Code, Globe, Moon, Palette, Search, Sparkles, Sun, SquareTerminal } from "lucide-react";
 import { useAudience } from "../audience.jsx";
 import { useI18n } from "../i18n.jsx";
 import { useTheme } from "../theme.jsx";
 
 const SECTIONS = ["graph", "pipeline", "blog", "timeline"];
 
-export function TopBar({ onOpenTerminal }) {
+export function TopBar({ onOpenTerminal, onOpenPalette }) {
   const { t, lang, toggleLang } = useI18n();
   const { mode, toggleMode, cycleColor } = useTheme();
   const { audience, toggleAudience } = useAudience();
@@ -30,13 +30,17 @@ export function TopBar({ onOpenTerminal }) {
         </nav>
       ) : null}
       <div className="top-controls">
+        <button type="button" className="palette-btn" onClick={onOpenPalette} aria-label={t("palette.label")}>
+          <Search size={15} />
+          <kbd>⌘K</kbd>
+        </button>
         <button type="button" className="audience-toggle" onClick={toggleAudience} aria-label={t("controls.audience")}>
           {geek ? <Sparkles size={15} /> : <Code size={15} />}
           <span>{geek ? t("controls.toStory") : t("controls.toGeek")}</span>
         </button>
         {geek ? (
           <>
-            <button type="button" className="icon-btn" onClick={onOpenTerminal} aria-label={t("controls.terminal")}>
+            <button type="button" className="icon-btn hide-narrow" onClick={onOpenTerminal} aria-label={t("controls.terminal")}>
               <SquareTerminal size={16} />
             </button>
             <button type="button" className="icon-btn hide-narrow" onClick={cycleColor} aria-label={t("controls.color")}>

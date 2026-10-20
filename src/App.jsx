@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AmbientCanvas } from "./components/AmbientCanvas.jsx";
 import { Blog } from "./components/Blog.jsx";
 import { Constellation } from "./components/Constellation.jsx";
@@ -9,10 +9,14 @@ import { Pipeline } from "./components/Pipeline.jsx";
 import { Terminal } from "./components/Terminal.jsx";
 import { Timeline } from "./components/Timeline.jsx";
 import { TopBar } from "./components/TopBar.jsx";
-import { StoryPage } from "./components/StoryPage.jsx";
+import { StoryPage, STORY_PLACE_EVENT } from "./components/StoryPage.jsx";
+import { CommandPalette } from "./components/CommandPalette.jsx";
+import { BootSequence, BOOTED_KEY } from "./components/BootSequence.jsx";
+import { contacts } from "./data/site.js";
 import { useAudience } from "./audience.jsx";
+import { useI18n } from "./i18n.jsx";
 import { useTheme } from "./theme.jsx";
-import { scrollToId } from "./lib/util.js";
+import { prefersReducedMotion, scrollToId } from "./lib/util.js";
 
 const KONAMI = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"];
 const isTyping = (target) => target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA");
@@ -76,6 +80,8 @@ function useKonami(onActivate) {
 
 export function App() {
   const { audience, toggleAudience } = useAudience();
+  const [paletteOpen, setPaletteOpen] = useState(false);
+  const [toast, setToast] = useState(null);
   useScrollVars();
 
   useEffect(() => {
@@ -88,22 +94,83 @@ export function App() {
     return () => window.clearTimeout(timer);
   }, []);
 
-  return audience === "story" ? <StoryApp onOpenGeek={toggleAudience} /> : <GeekApp />;
+  // ⌘K / Ctrl+K opens the command palette in both modes.
+  useEffect(() => {
+    const onKey = (event) => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+        event.preventDefault();
+        setPaletteOpen((value) => !value);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  useEffect(() => {
+    if (!toast) return undefined;
+    const timer = window.setTimeout(() => setToast(null), 2200);
+    return () => window.clearTimeout(timer);
+  }, [toast]);
+
+  const palette = { open: paletteOpen, setOpen: setPaletteOpen, notify: setToast };
+  return (
+    <>
+      {audience === "story" ? <StoryApp onOpenGeek={toggleAudience} palette={palette} /> : <GeekApp palette={palette} />}
+      {toast ? <p className="toast" role="status">{toast}</p> : null}
+    </>
+  );
 }
 
-function StoryApp({ onOpenGeek }) {
+// Commands both modes share in the palette.
+function useSharedCommands(notify) {
+  const { t, toggleLang } = useI18n();
+  const { mode, toggleMode } = useTheme();
+  const { audience, toggleAudience } = useAudience();
+  const email = contacts.find((contact) => contact.id === "email")?.value;
+  return useMemo(() => [
+    { id: "audience", label: audience === "geek" ? t("palette.toStory") : t("palette.toGeek"), hint: "mode", run: toggleAudience },
+    { id: "theme", label: mode === "dark" ? t("controls.toLight") : t("controls.toDark"), hint: "theme", run: toggleMode },
+    { id: "lang", label: t("controls.lang"), hint: "lang", run: toggleLang },
+    {
+      id: "email",
+      label: t("palette.copyEmail"),
+      hint: email,
+      run: () => navigator.clipboard?.writeText(email).then(() => notify(t("palette.copied")), () => notify(email)),
+    },
+  ], [t, mode, audience, toggleAudience, toggleMode, toggleLang, email, notify]);
+}
+
+function StoryApp({ onOpenGeek, palette }) {
+  const { t } = useI18n();
+  const shared = useSharedCommands(palette.notify);
+  const actions = useMemo(
+    () => ({
+      project: (id) => window.dispatchEvent(new CustomEvent(STORY_PLACE_EVENT, { detail: id })),
+      section: (id) => scrollToId(id),
+      sections: [
+        { id: "places", label: t("story.placesTitle") },
+        { id: "notes", label: t("story.notesTitle") },
+        { id: "contact", label: t("story.contactTitle") },
+      ],
+      commands: shared,
+    }),
+    [t, shared],
+  );
+
   return (
     <div className="app-shell story-shell">
       <CustomCursor />
-      <TopBar />
+      <TopBar onOpenPalette={() => palette.setOpen(true)} />
       <main>
         <StoryPage onOpenGeek={onOpenGeek} />
       </main>
+      <CommandPalette open={palette.open} onClose={() => palette.setOpen(false)} actions={actions} />
     </div>
   );
 }
 
-function GeekApp() {
+function GeekApp({ palette }) {
+  const { t } = useI18n();
   const { cycleColor } = useTheme();
   const konamiActive = useKonami(cycleColor);
   const oRef = useRef(null);
@@ -112,6 +179,8 @@ function GeekApp() {
   const [selectedId, setSelectedId] = useState(null);
   const [cluster, setCluster] = useState(null);
   const [liveOnly, setLiveOnly] = useState(false);
+  const [booting, setBooting] = useState(() => !prefersReducedMotion() && !window.localStorage?.getItem(BOOTED_KEY));
+  const shared = useSharedCommands(palette.notify);
 
   const select = useCallback((id) => setSelectedId(id), []);
   const focusNode = useCallback((id) => {
@@ -123,6 +192,26 @@ function GeekApp() {
     setLiveOnly(true);
   }, []);
   const openTerminal = useCallback(() => setTerminalOpen(true), []);
+  const reboot = useCallback(() => setBooting(true), []);
+  const bootDone = useCallback(() => {
+    window.localStorage?.setItem(BOOTED_KEY, "1");
+    setBooting(false);
+  }, []);
+
+  const actions = useMemo(
+    () => ({
+      project: focusNode,
+      section: (id) => scrollToId(id),
+      sections: ["graph", "pipeline", "blog", "timeline"].map((id) => ({ id, label: t(`nav.${id}`) })),
+      commands: [
+        { id: "terminal", label: t("controls.terminal"), hint: "`", run: openTerminal },
+        { id: "accent", label: t("controls.color"), hint: "accent", run: cycleColor },
+        { id: "reboot", label: t("palette.reboot"), hint: "reboot", run: reboot },
+        ...shared,
+      ],
+    }),
+    [t, focusNode, openTerminal, cycleColor, reboot, shared],
+  );
 
   useEffect(() => {
     const onKey = (event) => {
@@ -141,7 +230,7 @@ function GeekApp() {
       <CustomCursor />
       <div className="grid-overlay" aria-hidden="true" />
       <div className="scroll-progress" aria-hidden="true" />
-      <TopBar onOpenTerminal={openTerminal} />
+      <TopBar onOpenTerminal={openTerminal} onOpenPalette={() => palette.setOpen(true)} />
       <main>
         <Hero oRef={oRef} onSelect={focusNode} onShowLive={showLive} />
         <Constellation
@@ -158,7 +247,9 @@ function GeekApp() {
         <Timeline onFocus={focusNode} />
       </main>
       <Footer onOpenTerminal={openTerminal} onFocus={focusNode} />
-      <Terminal open={terminalOpen} onClose={() => setTerminalOpen(false)} onFocus={focusNode} />
+      <Terminal open={terminalOpen} onClose={() => setTerminalOpen(false)} onFocus={focusNode} onReboot={reboot} />
+      <CommandPalette open={palette.open} onClose={() => palette.setOpen(false)} actions={actions} />
+      {booting ? <BootSequence onDone={bootDone} /> : null}
     </div>
   );
 }

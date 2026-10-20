@@ -3,9 +3,13 @@ import { ArrowDown, ArrowUpRight, Code, X } from "lucide-react";
 import { blog } from "../data/store.js";
 import { EDGES, PROJECTS, ROADS, linkOf, liveCount, nodeById } from "../data/graph.js";
 import { contacts } from "../data/site.js";
+import { useStatus } from "../data/status.js";
 import { useI18n } from "../i18n.jsx";
 import { fmt, pick, prefersReducedMotion, useInView } from "../lib/util.js";
 import { StoryMap } from "./StoryMap.jsx";
+
+// The command palette asks story mode to show a place through this window event.
+export const STORY_PLACE_EVENT = "mosu:story-place";
 
 const STORY_FONT = '"PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif';
 const roadOf = (id) => ROADS.find((road) => road.places.includes(id));
@@ -28,7 +32,9 @@ export function StoryPage({ onOpenGeek }) {
   const [focusRoad, setFocusRoad] = useState(null);
   const [hoverId, setHoverId] = useState(null);
   const cardRef = useRef(null);
+  const introRef = useRef(null);
   const viewRef = useRef({});
+  const status = useStatus();
 
   const select = useCallback((id) => {
     setSelectedId(id);
@@ -51,7 +57,18 @@ export function StoryPage({ onOpenGeek }) {
     roadName: (road) => pick(road, lang),
     roadNote: (road) => fmt(t(road.places.length ? "story.notes" : "story.unfinished"), { n: road.count }),
     placeName: (node) => pick(node.nick, lang),
+    status,
+    intro: introRef.current,
   };
+
+  useEffect(() => {
+    const onPlace = (event) => {
+      select(event.detail);
+      scrollTop();
+    };
+    window.addEventListener(STORY_PLACE_EVENT, onPlace);
+    return () => window.removeEventListener(STORY_PLACE_EVENT, onPlace);
+  }, [select]);
 
   // The card belongs to the map: close it once the visitor scrolls past the first screen.
   useEffect(() => {
@@ -71,7 +88,7 @@ export function StoryPage({ onOpenGeek }) {
       <div className="story-grain" aria-hidden="true" />
 
       <section className="story-hero" aria-labelledby="story-title">
-        <div className="story-intro">
+        <div className="story-intro" ref={introRef}>
           <p className="story-kicker">{t("story.kicker")}</p>
           <h1 id="story-title">
             <span>{t("story.title1")}</span>
@@ -88,7 +105,7 @@ export function StoryPage({ onOpenGeek }) {
         </a>
       </section>
 
-      {selected ? <PlaceCard node={selected} cardRef={cardRef} onSelect={select} /> : null}
+      {selected ? <PlaceCard node={selected} cardRef={cardRef} onSelect={select} service={status?.services?.[selected.id]} /> : null}
 
       <StoryPlaces onPick={(id) => { select(id); scrollTop(); }} />
       <StoryNotes />
@@ -97,7 +114,7 @@ export function StoryPage({ onOpenGeek }) {
   );
 }
 
-function PlaceCard({ node, cardRef, onSelect }) {
+function PlaceCard({ node, cardRef, onSelect, service }) {
   const { t, lang } = useI18n();
   const road = roadOf(node.id);
   const link = linkOf(node);
@@ -112,6 +129,12 @@ function PlaceCard({ node, cardRef, onSelect }) {
       <h2>{pick(node.nick, lang)}</h2>
       <p className="place-plain">{pick(node.plain, lang)}</p>
       <p className="place-name">{node.name}</p>
+      {service ? (
+        <p className={service.ok ? "place-status up" : "place-status down"}>
+          <i aria-hidden="true" />
+          {service.ok ? fmt(t("story.running"), { ms: service.ms }) : t("story.down")}
+        </p>
+      ) : null}
       {link ? (
         <a className="place-visit" href={link} target="_blank" rel="noreferrer">
           {t("story.visit")} <ArrowUpRight size={15} />
@@ -183,7 +206,7 @@ function StoryNotes() {
   const latest = useMemo(() => blog.posts.slice(0, 3), []);
 
   return (
-    <section className={`story-section story-notes ${inView ? "in-view" : ""}`} ref={ref}>
+    <section id="notes" className={`story-section story-notes ${inView ? "in-view" : ""}`} ref={ref}>
       <header className="story-head">
         <h2>{t("story.notesTitle")}</h2>
       </header>
@@ -207,7 +230,7 @@ function StoryContact({ onOpenGeek }) {
   const [ref, inView] = useInView(0.3);
 
   return (
-    <section className={`story-section story-contact ${inView ? "in-view" : ""}`} ref={ref}>
+    <section id="contact" className={`story-section story-contact ${inView ? "in-view" : ""}`} ref={ref}>
       <header className="story-head">
         <h2>{t("story.contactTitle")}</h2>
       </header>
