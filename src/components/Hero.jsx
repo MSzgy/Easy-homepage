@@ -5,6 +5,7 @@ import { PROJECTS, liveCount } from "../data/graph.js";
 import { contacts, profile } from "../data/site.js";
 import { useI18n } from "../i18n.jsx";
 import { Heartbeat } from "./Heartbeat.jsx";
+import { VisitorCount } from "./VisitorCount.jsx";
 
 function useTypewriter(lines, { typeSpeed = 65, eraseSpeed = 40, pauseTime = 2400 } = {}) {
   const [text, setText] = useState("");
@@ -89,6 +90,8 @@ export function Hero({ oRef, onSelect, onShowLive }) {
             </a>
           ))}
         </div>
+
+        <VisitorCount />
       </div>
 
       <div className="hero-side">

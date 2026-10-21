@@ -13,10 +13,15 @@ export function BootSequence({ onDone }) {
   const { t } = useI18n();
   const [shown, setShown] = useState(0);
   const [services, setServices] = useState(null);
+  const [visitors, setVisitors] = useState(null);
   const [leaving, setLeaving] = useState(false);
 
   useEffect(() => {
-    refreshStatus().then((status) => status && setServices(upCount(status)));
+    refreshStatus().then((status) => {
+      if (!status) return;
+      setServices(upCount(status));
+      setVisitors(status.visitors ?? null);
+    });
   }, []);
 
   const lines = useMemo(
@@ -27,10 +32,11 @@ export function BootSequence({ onDone }) {
       services
         ? [services.up === services.total ? "OK" : "WARN", "Starting live services", `${services.up}/${services.total} up`]
         : ["OK", "Starting live services", `${liveCount} deployed`],
+      ["OK", "Counting visitors", visitors ? `${visitors.total} unique · ${visitors.today} today` : "pending"],
       ["OK", "Rendering constellation", "canvas"],
       ["OK", "Reached target", "mosu.homepage"],
     ],
-    [services],
+    [services, visitors],
   );
 
   useEffect(() => {

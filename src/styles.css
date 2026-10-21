@@ -3328,3 +3328,42 @@ main,
     transform: none;
   }
 }
+
+/* ---- Visitor counter ---- */
+
+.visitor-line {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+.visitor-line i {
+  align-self: center;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--c-agent);
+  box-shadow: 0 0 8px var(--c-agent);
+  animation: beat 1.6s ease-in-out infinite;
+}
+
+.visitor-line strong {
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+
+.visitor-sep {
+  color: var(--quiet);
+}
+
+.story-visitors {
+  margin: 28px 0 0;
+  font-family: var(--serif);
+  font-size: 17px;
+  color: color-mix(in srgb, var(--story-text) 78%, transparent);
+}

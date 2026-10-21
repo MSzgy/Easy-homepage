@@ -73,6 +73,12 @@ const translations = {
       label: "开机动画",
       skip: "按任意键跳过",
     },
+    visitors: {
+      unique: "位独立访客",
+      today: "今天 {n} 位",
+      since: "从 {date} 开始统计，同一个 IP 只算一次",
+      story: "已经有 {total} 位朋友来过这张地图，今天来了 {today} 位。",
+    },
     pulse: {
       title: "线上服务心跳",
       summary: "{up}/{total} 在线 · {min} 分钟前",
@@ -183,6 +189,8 @@ const translations = {
       nfNotes: "Notes",
       nfStack: "Stack",
       nfServices: "Services",
+      nfVisitors: "Visitors",
+      nfVisitorsValue: "{total} 位独立访客（今天 {today}）",
       up: "up",
       down: "down",
       noStatus: "状态数据还没有就绪（本地开发时没有，部署后每 5 分钟更新一次）。",
@@ -261,6 +269,12 @@ const translations = {
     boot: {
       label: "Boot sequence",
       skip: "Press any key to skip",
+    },
+    visitors: {
+      unique: "unique visitors",
+      today: "{n} today",
+      since: "Counted since {date}; each IP counts once",
+      story: "{total} people have visited this map so far, {today} of them today.",
     },
     pulse: {
       title: "Live service heartbeat",
@@ -372,6 +386,8 @@ const translations = {
       nfNotes: "Notes",
       nfStack: "Stack",
       nfServices: "Services",
+      nfVisitors: "Visitors",
+      nfVisitorsValue: "{total} unique ({today} today)",
       up: "up",
       down: "down",
       noStatus: "No status data yet (none in local dev; refreshed every 5 minutes once deployed).",

@@ -15,3 +15,5 @@ services:
       # Written hourly by easy-homepage-sync.service (systemd StateDirectory).
       # Kept outside the read-only dist mount; nginx serves it at /data/.
       - /var/lib/easy-homepage:/usr/share/nginx/live:ro
+      # Page-open log for the visitor counter; the sync job creates and truncates it.
+      - /var/lib/easy-homepage/visits:/var/log/visits

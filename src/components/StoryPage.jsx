@@ -7,6 +7,7 @@ import { useStatus } from "../data/status.js";
 import { useI18n } from "../i18n.jsx";
 import { fmt, pick, prefersReducedMotion, useInView } from "../lib/util.js";
 import { StoryMap } from "./StoryMap.jsx";
+import { VisitorCount } from "./VisitorCount.jsx";
 
 // The command palette asks story mode to show a place through this window event.
 export const STORY_PLACE_EVENT = "mosu:story-place";
@@ -243,6 +244,7 @@ function StoryContact({ onOpenGeek }) {
           </a>
         ))}
       </div>
+      <VisitorCount variant="story" />
       <button type="button" className="story-geek" onClick={onOpenGeek}>
         <Code size={16} />
         {t("story.geekCta")}

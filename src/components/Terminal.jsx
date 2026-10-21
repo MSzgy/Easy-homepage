@@ -55,6 +55,7 @@ export function Terminal({ open, onClose, onFocus, onReboot }) {
       [t("term.nfNotes"), `${blog.posts.length} · ${counts.map(([name, n]) => `${name} ${n}`).join(" · ")}`],
       [t("term.nfStack"), STACK.join(" · ")],
       [t("term.nfServices"), total ? `${up}/${total} ${t("term.up")}` : t("term.noStatus")],
+      ...(getStatus()?.visitors ? [[t("term.nfVisitors"), fmt(t("term.nfVisitorsValue"), { total: getStatus().visitors.total, today: getStatus().visitors.today })]] : []),
       <span className="tc-swatches"><i className="tc-bg-green" /><i className="tc-bg-blue" /><i className="tc-bg-purple" /><i className="tc-bg-orange" /><i className="tc-bg-amber" /></span>,
     ];
     return (

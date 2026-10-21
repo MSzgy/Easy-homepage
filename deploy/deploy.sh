@@ -21,7 +21,7 @@ npm run build
 $SSH "$DEPLOY_HOST" "sudo mkdir -p $DEPLOY_DIR/dist $DEPLOY_DIR/sync"
 eval "$RSYNC --delete dist/ $DEPLOY_HOST:$DEPLOY_DIR/dist/"
 eval "$RSYNC deploy/docker-compose.yml deploy/nginx.conf deploy/security-headers.conf $DEPLOY_HOST:$DEPLOY_DIR/"
-eval "$RSYNC scripts/sources.mjs scripts/sync-live.mjs $DEPLOY_HOST:$DEPLOY_DIR/sync/"
+eval "$RSYNC scripts/sources.mjs scripts/sync-live.mjs scripts/visitors.mjs $DEPLOY_HOST:$DEPLOY_DIR/sync/"
 eval "$RSYNC deploy/easy-homepage-sync.service deploy/easy-homepage-sync.timer $DEPLOY_HOST:/etc/systemd/system/"
 
 # Run the sync once before the container starts, so /var/lib/easy-homepage is
