@@ -3333,8 +3333,9 @@ main,
 
 .visitor-line {
   display: inline-flex;
+  flex-wrap: wrap;
   align-items: baseline;
-  gap: 8px;
+  gap: 4px 8px;
   margin: 0;
   font-family: var(--mono);
   font-size: 12.5px;
@@ -3351,6 +3352,10 @@ main,
   animation: beat 1.6s ease-in-out infinite;
 }
 
+.visitor-line > * {
+  white-space: nowrap;
+}
+
 .visitor-line strong {
   font-size: 15px;
   font-variant-numeric: tabular-nums;
@@ -3361,9 +3366,159 @@ main,
   color: var(--quiet);
 }
 
+.visitor-block {
+  display: grid;
+  gap: 12px;
+  justify-items: start;
+}
+
+.visitor-from {
+  display: inline-flex;
+  gap: 4px;
+  padding: 0;
+  border: 0;
+  border-bottom: 1px dashed color-mix(in srgb, var(--c-agent) 55%, transparent);
+  background: none;
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+  transition: color 160ms ease;
+}
+
+.visitor-from:hover,
+.visitor-from[aria-expanded="true"] {
+  color: var(--c-agent);
+}
+
+.visitor-from span {
+  color: var(--quiet);
+}
+
+.visitor-origins {
+  width: min(460px, 100%);
+  overflow: hidden;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  animation: logIn 260ms ease;
+}
+
+.visitor-origins ol {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 10px 16px 4px;
+  list-style: none;
+}
+
+.visitor-origins li {
+  display: grid;
+  grid-template-columns: 26px minmax(64px, 8em) minmax(0, 1fr) auto 38px;
+  gap: 10px;
+  align-items: center;
+  padding: 5px 0;
+  opacity: 0;
+  animation: logIn 420ms ease forwards;
+  animation-delay: calc(var(--n) * 60ms);
+}
+
+.visitor-origins li code {
+  font-family: inherit;
+  color: var(--quiet);
+}
+
+.origin-name {
+  overflow: hidden;
+  color: var(--text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.origin-bar {
+  position: relative;
+  height: 6px;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--border) 70%, transparent);
+}
+
+.origin-bar::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--w);
+  border-radius: inherit;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--c-agent) 45%, transparent), var(--c-agent));
+  box-shadow: 0 0 10px color-mix(in srgb, var(--c-agent) 45%, transparent);
+  transform-origin: 0 50%;
+  animation: originGrow 700ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation-delay: calc(var(--n) * 60ms + 120ms);
+}
+
+@keyframes originGrow {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+.visitor-origins li b {
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+
+.visitor-origins li small {
+  font-size: 11px;
+  text-align: right;
+  color: var(--quiet);
+}
+
+.origin-regions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  margin: 0;
+  padding: 8px 16px 0;
+  border-top: 1px dashed color-mix(in srgb, var(--border) 70%, transparent);
+  color: var(--muted);
+}
+
+.origin-regions > span:first-child {
+  margin-right: 4px;
+  color: var(--quiet);
+}
+
+.origin-chip {
+  padding: 2px 8px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text);
+}
+
+.origin-chip b {
+  color: var(--c-agent);
+}
+
+.origin-note {
+  margin: 0;
+  padding: 10px 16px 14px;
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--quiet);
+}
+
 .story-visitors {
   margin: 28px 0 0;
   font-family: var(--serif);
   font-size: 17px;
   color: color-mix(in srgb, var(--story-text) 78%, transparent);
+}
+
+/* Narrowest phones: the English "Story mode" label is longer, so tighten
+   the top bar until the language button fits. */
+@media (max-width: 400px) {
+  .top-bar {
+    gap: 8px;
+  }
+
+  .lang-toggle-btn {
+    padding: 7px 9px;
+  }
 }

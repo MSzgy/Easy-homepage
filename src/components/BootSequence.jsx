@@ -32,7 +32,7 @@ export function BootSequence({ onDone }) {
       services
         ? [services.up === services.total ? "OK" : "WARN", "Starting live services", `${services.up}/${services.total} up`]
         : ["OK", "Starting live services", `${liveCount} deployed`],
-      ["OK", "Counting visitors", visitors ? `${visitors.total} unique · ${visitors.today} today` : "pending"],
+      ["OK", "Counting visitors", visitors ? `${visitors.total} unique · ${visitors.today} today${visitors.countryCount ? ` · ${visitors.countryCount} countries` : ""}` : "pending"],
       ["OK", "Rendering constellation", "canvas"],
       ["OK", "Reached target", "mosu.homepage"],
     ],

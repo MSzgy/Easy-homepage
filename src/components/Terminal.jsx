@@ -5,9 +5,10 @@ import { CLUSTERS, PROJECTS, TOPICS, linkOf, projectByName } from "../data/graph
 import { contacts, profile } from "../data/site.js";
 import { useI18n } from "../i18n.jsx";
 import { useTheme } from "../theme.jsx";
+import { countryName, regionName } from "../lib/places.js";
 import { fmt, pick, scrollToId } from "../lib/util.js";
 
-const COMMANDS = ["help", "ls", "open", "visit", "blog", "whoami", "contact", "neofetch", "top", "git", "reboot", "graph", "pipeline", "timeline", "theme", "mode", "lang", "date", "echo", "clear", "exit", "sudo"];
+const COMMANDS = ["help", "ls", "open", "visit", "blog", "whoami", "contact", "neofetch", "top", "who", "git", "reboot", "graph", "pipeline", "timeline", "theme", "mode", "lang", "date", "echo", "clear", "exit", "sudo"];
 const ONLINE_SINCE = "2026-06-28";
 const LOGO = ["   ▄▄▄▄▄▄▄   ", "  █ ▄▄▄▄▄ █  ", "  █ █{/}█ █  ", "  █ █▄▄▄█ █  ", "  █▄▄▄▄▄▄▄█  ", "             ", "             ", "             ", "             "];
 const STACK = [...new Set(PROJECTS.flatMap((project) => project.stack))].filter((item) => ["TypeScript", "Python", "Rust", "Go", "React", "Next.js", "FastAPI"].includes(item));
@@ -28,6 +29,25 @@ const topRows = (status, t, lang) =>
     const uptime = checks.length ? Math.round((checks.filter((c) => c.ok).length / checks.length) * 1000) / 10 : 0;
     return `  ${project.name.padEnd(22)} ${(service.ok ? t("term.up") : t("term.down")).padEnd(6)} ${String(service.ms ?? "—").padStart(5)} ms   ${String(uptime).padStart(5)}%   ${pick(project.nick, lang)}`;
   });
+
+// `who`: visitors per country as a bar chart, then the top regions.
+const BAR = 18;
+const whoRows = (visitors, t, lang) => {
+  const countries = visitors.countries ?? [];
+  if (!countries.length) return [t("term.whoNone")];
+  const max = countries[0][1];
+  const unknown = visitors.total - visitors.located;
+  const line = (code, name, n) =>
+    `  ${code.padEnd(3)}${name.padEnd(12 - Math.max(0, [...name].filter((c) => c > "\u2e7f").length))} ${"█".repeat(Math.max(1, Math.round((n / max) * BAR))).padEnd(BAR)} ${String(n).padStart(5)}  ${String(Math.round((n / visitors.total) * 100)).padStart(3)}%`;
+  const regions = (visitors.regions ?? []).slice(0, 8).map((region) => `${regionName(region, lang)} ${region[3]}`);
+  return [
+    `  ${fmt(t("term.whoHead"), { total: visitors.total, n: visitors.countryCount ?? countries.length, since: visitors.since ?? "—" })}`,
+    "",
+    ...countries.slice(0, 10).map(([code, n]) => line(code, countryName(code, lang), n)),
+    ...(unknown > 0 ? [line("--", t("term.whoUnknown"), unknown)] : []),
+    ...(regions.length ? ["", `  ${t("term.whoRegions")}: ${regions.join(" · ")}`] : []),
+  ];
+};
 
 export function Terminal({ open, onClose, onFocus, onReboot }) {
   const { toggleMode, cycleColor, mode } = useTheme();
@@ -170,6 +190,13 @@ export function Terminal({ open, onClose, onFocus, onReboot }) {
       case "top": {
         const show = (status) =>
           addLine(cmd, status ? [`  ${t("term.topHead")}`, ...topRows(status, t, lang), "", `  ${fmt(t("term.topChecked"), { time: ago(status.checkedAt, lang) })}`].join("\n") : t("term.noStatus"));
+        const status = getStatus();
+        if (status) show(status);
+        else refreshStatus().then(show);
+        break;
+      }
+      case "who": {
+        const show = (status) => addLine(cmd, status?.visitors ? whoRows(status.visitors, t, lang).join("\n") : t("term.whoNone"));
         const status = getStatus();
         if (status) show(status);
         else refreshStatus().then(show);
